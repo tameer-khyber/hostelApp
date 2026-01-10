@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import '../../../routes/app_pages.dart';
 
 class HomeController extends GetxController {
   // Observable state for Bottom Navigation
@@ -16,7 +17,14 @@ class HomeController extends GetxController {
   }
 
   void changeTabIndex(int index) {
-    selectedIndex.value = index;
-    // Handle navigation logic if needed
+    if (index == 1) {
+      Get.toNamed(Routes.ROOM_LIST);
+    } else if (index == 2) {
+      Get.snackbar("Students", "Student management coming soon!");
+    } else if (index == 3) {
+       Get.toNamed(Routes.PROFILE);
+    } else {
+      selectedIndex.value = index;
+    }
   }
 }

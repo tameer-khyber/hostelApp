@@ -248,34 +248,43 @@ class HomeView extends GetView<HomeController> {
   }
 
   Widget _buildActionCard(String title, IconData icon, Color color, int delay) {
-    return GlassContainer(
-      borderRadius: BorderRadius.circular(20),
-      blur: 10,
-      opacity: 0.5,
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: color.withOpacity(0.1),
-              borderRadius: BorderRadius.circular(15),
+    return GestureDetector(
+      onTap: () {
+         Get.snackbar(title, "Feature coming soon!", 
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: color.withOpacity(0.8),
+          colorText: Colors.white,
+         );
+      },
+      child: GlassContainer(
+        borderRadius: BorderRadius.circular(20),
+        blur: 10,
+        opacity: 0.5,
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Icon(icon, color: color, size: 32),
             ),
-            child: Icon(icon, color: color, size: 32),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            title,
-            style: GoogleFonts.poppins(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: const Color(0xFF37474F),
+            const SizedBox(height: 12),
+            Text(
+              title,
+              style: GoogleFonts.poppins(
+                fontSize: 14,
+                fontWeight: FontWeight.w600,
+                color: const Color(0xFF37474F),
+              ),
             ),
-          ),
-        ],
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale();
+          ],
+        ),
+      ).animate().fadeIn(delay: Duration(milliseconds: delay)).scale(),
+    );
   }
 
   Widget _buildNavItem(int index, IconData icon, String label) {

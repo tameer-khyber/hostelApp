@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../routes/app_pages.dart';
 
-class LoginController extends GetxController {
+class SignupController extends GetxController {
+  final nameController = TextEditingController();
   final emailController = TextEditingController();
+  final phoneController = TextEditingController();
   final passwordController = TextEditingController();
   
   final isPasswordVisible = false.obs;
@@ -13,8 +15,11 @@ class LoginController extends GetxController {
     isPasswordVisible.value = !isPasswordVisible.value;
   }
 
-  void login() async {
-    if (emailController.text.isEmpty || passwordController.text.isEmpty) {
+  void signup() async {
+    if (nameController.text.isEmpty || 
+        emailController.text.isEmpty || 
+        phoneController.text.isEmpty || 
+        passwordController.text.isEmpty) {
       Get.snackbar('Error', 'Please fill all fields', 
         snackPosition: SnackPosition.BOTTOM,
         backgroundColor: Colors.red.withOpacity(0.8),
@@ -27,28 +32,25 @@ class LoginController extends GetxController {
     await Future.delayed(const Duration(seconds: 2)); // Simulate API
     isLoading.value = false;
     
-    // Determine where to go based on arguments
-    final args = Get.arguments;
-    final isOwner = args != null && args is Map && args.containsKey('isOwner') 
-        ? args['isOwner'] 
-        : true; // Default to owner if unknown
-
-    if (isOwner) {
-      Get.offAllNamed(Routes.HOME);
-    } else {
-      Get.offAllNamed(Routes.TENANT_HOME);
-    }
-
-    Get.snackbar('Success', 'Login Successful',
+    // For now, go to Home or OTP (Next Step)
+    // As per flow, maybe go to Login or Home? Let's go to Home for now or remain here.
+    // User asked for "OTP Verification" next. So logic will be updated later.
+    Get.snackbar('Success', 'Account Created',
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.green.withOpacity(0.8),
       colorText: Colors.white,
     );
   }
   
+  void goToLogin() {
+    Get.back(); // Go back to Login
+  }
+
   @override
   void onClose() {
+    nameController.dispose();
     emailController.dispose();
+    phoneController.dispose();
     passwordController.dispose();
     super.onClose();
   }

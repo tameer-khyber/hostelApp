@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart'; // Re-attempting usage, will fa
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
 class LoginView extends GetView<LoginController> {
@@ -159,7 +160,7 @@ class LoginView extends GetView<LoginController> {
                       Align(
                         alignment: Alignment.centerRight,
                         child: TextButton(
-                          onPressed: () {}, // Implement Forgot Password
+                          onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
                           child: Text(
                             "Forgot password?",
                             style: GoogleFonts.poppins(
@@ -219,7 +220,7 @@ class LoginView extends GetView<LoginController> {
                         children: [
                           Text("Don't have an account? ", style: GoogleFonts.poppins(color: Colors.grey.shade700)),
                           GestureDetector(
-                            onTap: () {}, // Implement Sign Up
+                            onTap: () => Get.toNamed(Routes.SIGNUP),
                             child: Text(
                               "Sign Up",
                               style: GoogleFonts.poppins(

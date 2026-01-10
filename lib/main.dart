@@ -12,7 +12,7 @@ void main() {
       getPages: AppPages.routes,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        textTheme: GoogleFonts.interTextTheme(),
+        // textTheme: GoogleFonts.interTextTheme(),
         primarySwatch: Colors.orange,
       ),
     ),

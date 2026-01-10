@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../routes/app_pages.dart';
 
 class LoginController extends GetxController {
   final emailController = TextEditingController();
@@ -26,7 +27,8 @@ class LoginController extends GetxController {
     await Future.delayed(const Duration(seconds: 2)); // Simulate API
     isLoading.value = false;
     
-    // TODO: Navigate to Home
+    // Navigate to Home
+    Get.offAllNamed(Routes.HOME);
     Get.snackbar('Success', 'Login Successful',
       snackPosition: SnackPosition.BOTTOM,
       backgroundColor: Colors.green.withOpacity(0.8),

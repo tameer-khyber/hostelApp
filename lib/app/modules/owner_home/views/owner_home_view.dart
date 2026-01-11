@@ -11,26 +11,27 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBody: true,
       body: Stack(
         children: [
-          // 1. Background (Consistent with App Theme)
+          // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Light Cyan
-                  Color(0xFFE8EAF6), // Light Indigo
-                  Color(0xFFF3E5F5), // Light Purple
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)] // Midnight/Aurora
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)], // Pastels
               ),
             ),
           ),
 
-          // 2. Bokeh Effect
+          // 2. Bokeh Effect (Adjusted opacities for dark mode)
           Positioned(
             top: -80,
             left: -80,
@@ -41,7 +42,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.tealAccent.withOpacity(0.2),
+                    isDark ? Colors.tealAccent.withOpacity(0.1) : Colors.tealAccent.withOpacity(0.2),
                     Colors.transparent,
                   ],
                 ),
@@ -68,11 +69,11 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           children: [
                             Text(
                               "Welcome back,",
-                              style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[700]),
+                              style: GoogleFonts.poppins(fontSize: 14, color: theme.textTheme.bodyMedium?.color),
                             ),
                             Text(
                               "Property Owner",
-                              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                              style: GoogleFonts.poppins(fontSize: 24, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                             ),
                           ],
                         ),
@@ -87,10 +88,10 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                                 shape: BoxShape.circle,
                                 border: Border.all(color: Colors.teal, width: 2),
                               ),
-                              child: const CircleAvatar(
+                              child: CircleAvatar(
                                 radius: 20,
-                                backgroundColor: Colors.white,
-                                child: Icon(Icons.person, color: Colors.grey),
+                                backgroundColor: isDark ? Colors.grey[800] : Colors.white,
+                                child: Icon(Icons.person, color: isDark ? Colors.white : Colors.grey),
                               ),
                             ),
                           ),
@@ -108,6 +109,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                     child: Row(
                       children: [
                         _buildStatCard(
+                          context,
                           title: "Total Properties",
                           value: controller.totalProperties.toString(),
                           icon: Icons.apartment_rounded,
@@ -115,6 +117,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           delay: 100,
                         ),
                         _buildStatCard(
+                          context,
                           title: "Total Bookings",
                           value: controller.totalBookings.toString(),
                           icon: Icons.book_online_rounded,
@@ -122,6 +125,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           delay: 200,
                         ),
                         _buildStatCard(
+                          context,
                           title: "Total Earnings",
                           value: "\$${controller.totalEarnings}",
                           icon: Icons.attach_money_rounded,
@@ -139,7 +143,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Text(
                       "Quick Actions",
-                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                      style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -149,30 +153,35 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                     child: Row(
                       children: [
                         _buildActionButton(
+                          context,
                           icon: Icons.add_home_work_rounded,
                           label: "Add Property",
                           onTap: () => Get.toNamed('/add-property'),
                         ),
                         const SizedBox(width: 24),
                         _buildActionButton(
+                          context,
                           icon: Icons.qr_code_scanner_rounded,
                           label: "Scan QR",
                           onTap: () => Get.toNamed('/scan-qr'),
                         ),
                         const SizedBox(width: 24),
                         _buildActionButton(
+                          context,
                           icon: Icons.analytics_outlined,
                           label: "Analytics",
                           onTap: () => Get.toNamed('/analytics'),
                         ),
                         const SizedBox(width: 24),
                         _buildActionButton(
+                          context,
                           icon: Icons.bookmark_border_rounded,
                           label: "Saved",
                           onTap: () => Get.toNamed(Routes.SAVED_PROPERTIES),
                         ),
                         const SizedBox(width: 24),
                         _buildActionButton(
+                          context,
                           icon: Icons.settings_outlined,
                           label: "Settings",
                           onTap: () => Get.toNamed('/settings'),
@@ -191,7 +200,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                       children: [
                         Text(
                           "Notifications",
-                          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                          style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                         ),
                          GestureDetector(
                            onTap: () => Get.toNamed('/notifications'),
@@ -215,8 +224,8 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                              notif['title']!,
                              notif['body']!,
                              snackPosition: SnackPosition.TOP,
-                             backgroundColor: Colors.white.withOpacity(0.9),
-                             colorText: Colors.black,
+                             backgroundColor: isDark ? Colors.grey[900] : Colors.white.withOpacity(0.9),
+                             colorText: isDark ? Colors.white : Colors.black,
                              margin: const EdgeInsets.all(10),
                              borderRadius: 10,
                              duration: const Duration(seconds: 4),
@@ -234,7 +243,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                                 Container(
                                   padding: const EdgeInsets.all(10),
                                   decoration: BoxDecoration(
-                                    color: Colors.white.withOpacity(0.5),
+                                    color: theme.cardColor.withOpacity(0.5),
                                     shape: BoxShape.circle,
                                   ),
                                   child: const Icon(Icons.notifications_active_outlined, color: Colors.teal, size: 20),
@@ -246,21 +255,21 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                                     children: [
                                       Text(
                                         notif['title']!,
-                                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                                       ),
                                       const SizedBox(height: 4),
                                       Text(
                                         notif['body']!,
                                         maxLines: 2,
                                         overflow: TextOverflow.ellipsis,
-                                        style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
+                                        style: GoogleFonts.poppins(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
                                       ),
                                     ],
                                   ),
                                 ),
                                 Text(
                                   notif['time']!,
-                                  style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey[500]),
+                                  style: GoogleFonts.poppins(fontSize: 10, color: theme.textTheme.bodyMedium?.color),
                                 ),
                               ],
                             ),
@@ -288,10 +297,10 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                  child: Row(
                    mainAxisAlignment: MainAxisAlignment.spaceAround,
                    children: [
-                     _buildBottomNavItem(Icons.dashboard_rounded, "Dashboard", true),
-                     _buildBottomNavItem(Icons.apartment_rounded, "Properties", false),
-                     _buildBottomNavItem(Icons.calendar_month_rounded, "Bookings", false),
-                     _buildBottomNavItem(Icons.person_outline_rounded, "Profile", false),
+                     _buildBottomNavItem(context, Icons.dashboard_rounded, "Dashboard", true),
+                     _buildBottomNavItem(context, Icons.apartment_rounded, "Properties", false),
+                     _buildBottomNavItem(context, Icons.calendar_month_rounded, "Bookings", false),
+                     _buildBottomNavItem(context, Icons.person_outline_rounded, "Profile", false),
                    ],
                  ),
                ),
@@ -302,7 +311,8 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
     );
   }
 
-  Widget _buildStatCard({required String title, required String value, required IconData icon, required Color color, int delay = 0}) {
+  Widget _buildStatCard(BuildContext context, {required String title, required String value, required IconData icon, required Color color, int delay = 0}) {
+    final theme = Theme.of(context);
     return Padding(
       padding: const EdgeInsets.only(right: 16),
       child: GlassContainer(
@@ -325,12 +335,12 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
             const SizedBox(height: 16),
             Text(
               value,
-              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
             ),
             const SizedBox(height: 4),
             Text(
               title,
-              style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
+              style: GoogleFonts.poppins(fontSize: 12, color: theme.textTheme.bodyMedium?.color),
             ),
           ],
         ),
@@ -338,7 +348,8 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
     ).animate().fadeIn(delay: delay.ms).slideX();
   }
 
-  Widget _buildActionButton({required IconData icon, required String label, required VoidCallback onTap}) {
+  Widget _buildActionButton(BuildContext context, {required IconData icon, required String label, required VoidCallback onTap}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Tooltip(
@@ -349,26 +360,28 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Colors.white.withOpacity(0.7), Colors.white.withOpacity(0.3)],
+                  colors: isDark 
+                      ? [Colors.white.withOpacity(0.1), Colors.white.withOpacity(0.05)]
+                      : [Colors.white.withOpacity(0.7), Colors.white.withOpacity(0.3)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 shape: BoxShape.circle,
                 boxShadow: [
                    BoxShadow(
-                     color: Colors.teal.withOpacity(0.1),
+                     color: isDark ? Colors.black26 : Colors.teal.withOpacity(0.1),
                      blurRadius: 10, 
                      offset: const Offset(0, 5)
                    ),
                    BoxShadow(
-                     color: Colors.white.withOpacity(0.5),
+                     color: isDark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.5),
                      blurRadius: 5, 
                      offset: const Offset(-2, -2)
                    ),
                 ],
                 border: Border.all(color: Colors.white.withOpacity(0.5), width: 1.5),
               ),
-              child: Icon(icon, color: Colors.teal.shade700, size: 26),
+              child: Icon(icon, color: isDark ? Colors.tealAccent : Colors.teal.shade700, size: 26),
             ),
             const SizedBox(height: 10),
             Text(
@@ -376,7 +389,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
               style: GoogleFonts.poppins(
                 fontSize: 12, 
                 fontWeight: FontWeight.w600, 
-                color: const Color(0xFF34495E)
+                color: Theme.of(context).textTheme.bodyMedium?.color
               ),
             ),
           ],
@@ -385,15 +398,15 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
     );
   }
 
-  Widget _buildBottomNavItem(IconData icon, String label, bool isActive) {
+  Widget _buildBottomNavItem(BuildContext context, IconData icon, String label, bool isActive) {
      return GestureDetector(
       onTap: () {
         if (label == "Profile") {
            Get.toNamed('/profile'); 
         } else if (label == "Properties") {
-           Get.toNamed('/property-listing'); // Or owner specific listing View
+           Get.toNamed('/property-listing'); 
         } else if (label == "Bookings") {
-           Get.toNamed('/bookings-history'); // Or owner specific bookings
+           Get.toNamed('/bookings-history'); 
         }
       },
       child: Tooltip(
@@ -403,7 +416,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
           children: [
             Icon(
               icon, 
-              color: isActive ? Colors.teal : Colors.grey, 
+              color: isActive ? Colors.teal : (Theme.of(context).brightness == Brightness.dark ? Colors.grey[400] : Colors.grey), 
               size: 28
             ),
           ],

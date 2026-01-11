@@ -34,15 +34,13 @@ class AnalyticsView extends GetView<AnalyticsController> {
         children: [
            // 1. Background
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Light Cyan
-                  Color(0xFFE8EAF6), // Light Indigo
-                  Color(0xFFF3E5F5), // Light Purple
-                ],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
               ),
             ),
           ),

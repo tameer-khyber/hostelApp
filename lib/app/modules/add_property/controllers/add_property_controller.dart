@@ -80,8 +80,7 @@ class AddPropertyController extends GetxController {
       selectedImage.value,
       description: descriptionController.text,
       ownerName: "Me (Owner)", // In a real app, get from User Service
-      reviews: [],
-      reviews: [],
+      // reviews: [], // Removed duplicate
       securityDeposit: depositController.text.isNotEmpty ? "\$${depositController.text}" : null,
       rules: rulesController.text.isNotEmpty ? rulesController.text.split('\n') : [],
       amenities: selectedAmenities.toList(),

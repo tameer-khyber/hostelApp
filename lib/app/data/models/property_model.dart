@@ -13,6 +13,7 @@ class PropertyModel {
   final List<String> rules;
   final String ownerName;
   final String ownerContact;
+  final double ownerRating;
   final double latitude;
   final double longitude;
   final String? securityDeposit;
@@ -33,6 +34,7 @@ class PropertyModel {
       this.rules = const [],
       this.ownerName = "Unknown",
       this.ownerContact = "",
+      this.ownerRating = 0.0,
       this.latitude = 0.0,
       this.longitude = 0.0,
       this.securityDeposit,

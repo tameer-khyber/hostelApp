@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:geolocator/geolocator.dart';
 
 class LocationPickerView extends StatefulWidget {
   const LocationPickerView({Key? key}) : super(key: key);
@@ -16,6 +17,60 @@ class _LocationPickerViewState extends State<LocationPickerView> {
   // Default to a central location (e.g., New Delhi) if permission/current location fails
   final LatLng _center = const LatLng(28.6139, 77.2090); 
   LatLng? _pickedLocation;
+  RxBool isLoading = true.obs;
+
+  @override
+  void initState() {
+    super.initState();
+    _getUserLocation();
+  }
+
+  Future<void> _getUserLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    // Test if location services are enabled.
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // Location services are not enabled don't continue
+      // accessing the position and request users of the 
+      // App to enable the location services.
+      isLoading.value = false;
+      return;
+    }
+
+    permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        isLoading.value = false;
+        return;
+      }
+    }
+    
+    if (permission == LocationPermission.deniedForever) {
+      isLoading.value = false;
+      return;
+    } 
+
+    // When we reach here, permissions are granted and we can
+    // continue accessing the position of the device.
+    try {
+      Position position = await Geolocator.getCurrentPosition();
+      if (mounted) {
+        setState(() {
+            _pickedLocation = LatLng(position.latitude, position.longitude);
+        });
+        mapController.animateCamera(CameraUpdate.newLatLngZoom(
+          LatLng(position.latitude, position.longitude), 15
+        ));
+      }
+    } catch(e) {
+      debugPrint("Error getting location: $e");
+    } finally {
+      isLoading.value = false;
+    }
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;

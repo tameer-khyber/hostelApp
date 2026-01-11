@@ -7,7 +7,10 @@ import 'app/data/services/property_service.dart';
 
 import 'dart:ui';
 
+import 'app/modules/settings/controllers/settings_controller.dart';
+
 void main() {
+  Get.put(SettingsController(), permanent: true);
   Get.put(PropertyService());
   runApp(
     GetMaterialApp(

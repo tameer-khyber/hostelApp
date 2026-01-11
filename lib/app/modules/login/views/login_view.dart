@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:google_fonts/google_fonts.dart'; // Re-attempting usage, will fallback if crash
+import 'package:google_fonts/google_fonts.dart'; 
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
+import '../../../global_widgets/theme_toggle_button.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
@@ -12,26 +13,20 @@ class LoginView extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) {
-    // Determine screen size for responsive layout
-    final size = MediaQuery.of(context).size;
-
     return Scaffold(
-      extendBody: true, // Allow body to extend behind bottom nav
+      extendBody: true, 
       body: Stack(
         children: [
-          // 1. Background (Light Blue/Cyan Gradient)
+          // 1. Background (Theme Aware)
           Positioned.fill(
             child: Container(
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [
-                    Color(0xFFE0F7FA), // Very light cyan
-                    Color(0xFFE1F5FE), // Light Blue
-                    Color(0xFFB3E5FC), // Light Blue 100
-                    Color(0xFF81D4FA), // Light Blue 200
-                  ],
+                  colors: Theme.of(context).brightness == Brightness.dark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE1F5FE), const Color(0xFFB3E5FC), const Color(0xFF81D4FA)],
                 ),
               ),
             ),
@@ -48,8 +43,8 @@ class LoginView extends GetView<LoginController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(0.4),
-                    Colors.white.withOpacity(0.0),
+                    Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.4),
+                    Colors.transparent,
                   ],
                 ),
               ),
@@ -66,7 +61,7 @@ class LoginView extends GetView<LoginController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.blueAccent.withOpacity(0.2),
+                    Theme.of(context).brightness == Brightness.dark ? Colors.blueAccent.withOpacity(0.1) : Colors.blueAccent.withOpacity(0.2),
                     Colors.blueAccent.withOpacity(0.0),
                   ],
                 ),
@@ -77,162 +72,178 @@ class LoginView extends GetView<LoginController> {
           // 3. Main Content Area
           Center(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(vertical: 24), // Removed large bottom padding
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: GlassContainer(
-                  borderRadius: BorderRadius.circular(30),
-                  blur: 20,
-                  opacity: 0.4, // Milkier glass
-                  border: Border.all(color: Colors.white.withOpacity(0.6), width: 1.5),
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      // Logo & Title
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                child: Column(
+                  children: [
+                    // Theme Toggle Button
+                    Align(
+                      alignment: Alignment.topRight,
+                      child: const ThemeToggleButton(),
+                    ),
+                    const SizedBox(height: 20),
+                    
+                    GlassContainer(
+                      borderRadius: BorderRadius.circular(30),
+                      blur: 20,
+                      opacity: Theme.of(context).brightness == Brightness.dark ? 0.6 : 0.4, 
+                      border: Border.all(
+                        color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.6), 
+                        width: 1.5
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 40),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.home_work_rounded, color: Colors.teal.shade400, size: 32),
-                          const SizedBox(width: 8),
+                          // Logo & Title
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(Icons.home_work_rounded, color: Colors.teal.shade400, size: 32),
+                              const SizedBox(width: 8),
+                              Text(
+                                'HostelApp',
+                                style: GoogleFonts.poppins(
+                                  fontSize: 22,
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context).textTheme.bodyLarge?.color,
+                                ),
+                              ),
+                            ],
+                          ).animate().fadeIn().slideY(begin: -0.2),
+    
+                          const SizedBox(height: 30),
+    
                           Text(
-                            'HostelApp',
+                            'Welcome Back',
                             style: GoogleFonts.poppins(
-                              fontSize: 22,
-                              fontWeight: FontWeight.bold,
-                              color: const Color(0xFF2C3E50),
+                              fontSize: 26,
+                              fontWeight: FontWeight.w600,
+                              color: Theme.of(context).textTheme.bodyLarge?.color,
                             ),
                           ),
-                        ],
-                      ).animate().fadeIn().slideY(begin: -0.2),
-
-                      const SizedBox(height: 30),
-
-                      Text(
-                        'Welcome Back',
-                        style: GoogleFonts.poppins(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w600,
-                          color: const Color(0xFF34495E),
-                        ),
-                      ),
-                      const SizedBox(height: 5),
-                      Text(
-                        'Login to your account',
-                        style: GoogleFonts.poppins(
-                          fontSize: 14,
-                          color: Colors.grey.shade600,
-                        ),
-                      ),
-
-                      const SizedBox(height: 40),
-
-                      // Email Field
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Email", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: const Color(0xFF37474F))),
-                      ),
-                      const SizedBox(height: 8),
-                      _buildModernInput(
-                        controller: controller.emailController,
-                        hint: 'Enter your email',
-                        icon: Icons.email_outlined,
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Password Field
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: Text("Password", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: const Color(0xFF37474F))),
-                      ),
-                      const SizedBox(height: 8),
-                      Obx(() => _buildModernInput(
-                        controller: controller.passwordController,
-                        hint: 'Enter your password',
-                        icon: Icons.lock_outline,
-                        isPassword: true,
-                        isVisible: controller.isPasswordVisible.value,
-                        onVisibilityToggle: controller.togglePasswordVisibility,
-                      )),
-
-                      const SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerRight,
-                        child: TextButton(
-                          onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
-                          child: Text(
-                            "Forgot password?",
+                          const SizedBox(height: 5),
+                          Text(
+                            'Login to your account',
                             style: GoogleFonts.poppins(
-                              color: Colors.teal.shade600,
-                              fontWeight: FontWeight.w500,
+                              fontSize: 14,
+                              color: Theme.of(context).textTheme.bodyMedium?.color,
                             ),
                           ),
-                        ),
-                      ),
-
-                      const SizedBox(height: 20),
-
-                      // Main Login Button
-                      _buildGradientButton(
-                        text: "Log In",
-                        onPressed: controller.login,
-                        isLoading: controller.isLoading.value,
-                      ),
-
-                      const SizedBox(height: 25),
-                      
-                      Row(
-                        children: [
-                          Expanded(child: Divider(color: Colors.grey.shade400)),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 10),
-                            child: Text("or", style: TextStyle(color: Colors.grey.shade600)),
+    
+                          const SizedBox(height: 40),
+    
+                          // Email Field
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Email", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge?.color)),
                           ),
-                          Expanded(child: Divider(color: Colors.grey.shade400)),
-                        ],
-                      ),
-
-                      const SizedBox(height: 25),
-
-                      // Social Buttons
-                      _buildSocialButtonFull(
-                        text: "Continue with Google",
-                        icon: Icons.g_mobiledata_rounded, // Using built-in icon as placeholder
-                        color: Colors.redAccent,
-                        textColor: const Color(0xFF37474F),
-                        iconColor: Colors.red,
-                      ),
-                      const SizedBox(height: 15),
-                      _buildSocialButtonFull(
-                        text: "Continue with Facebook",
-                        icon: Icons.facebook,
-                        color: const Color(0xFF1877F2),
-                        textColor: Colors.white,
-                        iconColor: Colors.white,
-                        backgroundColor: const Color(0xFF1877F2), // Blue Background
-                      ),
-                      
-                      const SizedBox(height: 30),
-                      
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text("Don't have an account? ", style: GoogleFonts.poppins(color: Colors.grey.shade700)),
-                          GestureDetector(
-                            onTap: () => Get.toNamed(Routes.SIGNUP),
-                            child: Text(
-                              "Sign Up",
-                              style: GoogleFonts.poppins(
-                                color: Colors.teal.shade600,
-                                fontWeight: FontWeight.bold,
+                          const SizedBox(height: 8),
+                          _buildModernInput(
+                            context,
+                            controller: controller.emailController,
+                            hint: 'Enter your email',
+                            icon: Icons.email_outlined,
+                          ),
+    
+                          const SizedBox(height: 20),
+    
+                          // Password Field
+                          Align(
+                            alignment: Alignment.centerLeft,
+                            child: Text("Password", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge?.color)),
+                          ),
+                          const SizedBox(height: 8),
+                          Obx(() => _buildModernInput(
+                            context,
+                            controller: controller.passwordController,
+                            hint: 'Enter your password',
+                            icon: Icons.lock_outline,
+                            isPassword: true,
+                            isVisible: controller.isPasswordVisible.value,
+                            onVisibilityToggle: controller.togglePasswordVisibility,
+                          )),
+    
+                          const SizedBox(height: 10),
+                          Align(
+                            alignment: Alignment.centerRight,
+                            child: TextButton(
+                              onPressed: () => Get.toNamed(Routes.FORGOT_PASSWORD),
+                              child: Text(
+                                "Forgot password?",
+                                style: GoogleFonts.poppins(
+                                  color: Colors.teal.shade600,
+                                  fontWeight: FontWeight.w500,
+                                ),
                               ),
                             ),
                           ),
+    
+                          const SizedBox(height: 20),
+    
+                          // Main Login Button
+                          _buildGradientButton(
+                            text: "Log In",
+                            onPressed: controller.login,
+                            isLoading: controller.isLoading.value,
+                          ),
+    
+                          const SizedBox(height: 25),
+                          
+                          Row(
+                            children: [
+                              Expanded(child: Divider(color: Colors.grey.shade400)),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 10),
+                                child: Text("or", style: TextStyle(color: Colors.grey.shade600)),
+                              ),
+                              Expanded(child: Divider(color: Colors.grey.shade400)),
+                            ],
+                          ),
+    
+                          const SizedBox(height: 25),
+    
+                          // Social Buttons
+                          _buildSocialButtonFull(
+                            text: "Continue with Google",
+                            icon: Icons.g_mobiledata_rounded, // Using built-in icon as placeholder
+                            color: Colors.redAccent,
+                            textColor: const Color(0xFF37474F),
+                            iconColor: Colors.red,
+                          ),
+                          const SizedBox(height: 15),
+                          _buildSocialButtonFull(
+                            text: "Continue with Facebook",
+                            icon: Icons.facebook,
+                            color: const Color(0xFF1877F2),
+                            textColor: Colors.white,
+                            iconColor: Colors.white,
+                            backgroundColor: const Color(0xFF1877F2), // Blue Background
+                          ),
+                          
+                          const SizedBox(height: 30),
+                          
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text("Don't have an account? ", style: GoogleFonts.poppins(color: Theme.of(context).textTheme.bodyMedium?.color)),
+                              GestureDetector(
+                                onTap: () => Get.toNamed(Routes.SIGNUP),
+                                child: Text(
+                                  "Sign Up",
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.teal.shade600,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -242,7 +253,8 @@ class LoginView extends GetView<LoginController> {
     );
   }
 
-  Widget _buildModernInput({
+  Widget _buildModernInput(
+    BuildContext context, {
     required TextEditingController controller,
     required String hint,
     required IconData icon,
@@ -250,9 +262,10 @@ class LoginView extends GetView<LoginController> {
     bool isVisible = false,
     VoidCallback? onVisibilityToggle,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: isDark ? const Color(0xFF2C3E50) : Colors.white,
         borderRadius: BorderRadius.circular(12),
         boxShadow: [
           BoxShadow(
@@ -265,7 +278,7 @@ class LoginView extends GetView<LoginController> {
       child: TextField(
         controller: controller,
         obscureText: isPassword && !isVisible,
-        style: GoogleFonts.poppins(color: Colors.black87),
+        style: GoogleFonts.poppins(color: isDark ? Colors.white : Colors.black87),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),

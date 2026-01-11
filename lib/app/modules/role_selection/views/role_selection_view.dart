@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
+import '../../../global_widgets/theme_toggle_button.dart';
 import '../controllers/role_selection_controller.dart';
 
 class RoleSelectionView extends GetView<RoleSelectionController> {
@@ -14,18 +15,15 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. Background (Shared Light Theme)
+          // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Very light cyan
-                  Color(0xFFE1F5FE), // Light Blue
-                  Color(0xFFB3E5FC), // Light Blue 100
-                  Color(0xFF81D4FA), // Light Blue 200
-                ],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE1F5FE), const Color(0xFFB3E5FC), const Color(0xFF81D4FA)],
               ),
             ),
           ),
@@ -41,8 +39,8 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(0.4),
-                    Colors.white.withOpacity(0.0),
+                    Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.4),
+                    Colors.transparent,
                   ],
                 ),
               ),
@@ -57,13 +55,20 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                   // Top Bar
+                   Row(
+                     mainAxisAlignment: MainAxisAlignment.end,
+                     children: [
+                       const ThemeToggleButton(),
+                     ],
+                   ),
                    const Spacer(flex: 1),
                    Text(
                     "Who are you?",
                     style: GoogleFonts.poppins(
                       fontSize: 32,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2C3E50),
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ).animate().fadeIn().slideX(),
                   
@@ -71,7 +76,7 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
                     "Choose your role to get started",
                     style: GoogleFonts.poppins(
                       fontSize: 16,
-                      color: Colors.grey.shade600,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                     ),
                   ).animate().fadeIn(delay: const Duration(milliseconds: 200)).slideX(),
                   
@@ -79,6 +84,7 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
                   
                   // Owner Card
                   _buildRoleCard(
+                    context,
                     title: "Property Owner",
                     description: "I want to list my property and manage tenants.",
                     icon: Icons.vpn_key_rounded,
@@ -91,6 +97,7 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
                   
                   // Tenant Card
                   _buildRoleCard(
+                    context,
                     title: "Tenant / Guest",
                     description: "I am looking for a hostel or flat to rent.",
                     icon: Icons.person_search_rounded,
@@ -109,7 +116,8 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
     );
   }
 
-  Widget _buildRoleCard({
+  Widget _buildRoleCard(
+    BuildContext context, {
     required String title,
     required String description,
     required IconData icon,
@@ -117,6 +125,7 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
     required VoidCallback onTap,
     required int delay,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: GlassContainer(
@@ -124,7 +133,10 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
         blur: 15,
         opacity: 0.5,
         padding: const EdgeInsets.all(24),
-        border: Border.all(color: Colors.white.withOpacity(0.8), width: 1.5),
+        border: Border.all(
+          color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.8), 
+          width: 1.5
+        ),
         child: Row(
           children: [
             Container(
@@ -145,7 +157,7 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
                     style: GoogleFonts.poppins(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF37474F),
+                      color: Theme.of(context).textTheme.bodyLarge?.color,
                     ),
                   ),
                   const SizedBox(height: 8),
@@ -153,14 +165,14 @@ class RoleSelectionView extends GetView<RoleSelectionController> {
                     description,
                     style: GoogleFonts.poppins(
                       fontSize: 13,
-                      color: Colors.grey.shade700,
+                      color: Theme.of(context).textTheme.bodyMedium?.color,
                       height: 1.4,
                     ),
                   ),
                 ],
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey.shade400),
+            Icon(Icons.arrow_forward_ios_rounded, size: 16, color: isDark ? Colors.grey[400] : Colors.grey.shade400),
           ],
         ),
       ),

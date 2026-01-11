@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
+import '../../../global_widgets/theme_toggle_button.dart';
 import '../controllers/signup_controller.dart';
 
 class SignupView extends GetView<SignupController> {
@@ -14,18 +15,15 @@ class SignupView extends GetView<SignupController> {
     return Scaffold(
       body: Stack(
         children: [
-          // 1. Background (Shared Light Theme)
+          // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Very light cyan
-                  Color(0xFFE1F5FE), // Light Blue
-                  Color(0xFFB3E5FC), // Light Blue 100
-                  Color(0xFF81D4FA), // Light Blue 200
-                ],
+                colors: Theme.of(context).brightness == Brightness.dark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE1F5FE), const Color(0xFFB3E5FC), const Color(0xFF81D4FA)],
               ),
             ),
           ),
@@ -41,8 +39,8 @@ class SignupView extends GetView<SignupController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(0.4),
-                    Colors.white.withOpacity(0.0),
+                    Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.4),
+                    Colors.transparent,
                   ],
                 ),
               ),
@@ -51,133 +49,158 @@ class SignupView extends GetView<SignupController> {
           ),
 
           // 3. Main Content
-          Center(
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // Header
-                  Icon(Icons.person_add_rounded, size: 60, color: Colors.teal.shade700)
-                      .animate().scale(duration: const Duration(milliseconds: 500)),
-                  const SizedBox(height: 16),
-                  Text(
-                    "Create Account",
-                    style: GoogleFonts.poppins(
-                      fontSize: 28,
-                      fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2C3E50),
-                    ),
-                  ).animate().fadeIn().slideY(begin: 0.2),
-                  const SizedBox(height: 8),
-                   Text(
-                    "Join us to find your perfect space",
-                    style: GoogleFonts.poppins(
-                      fontSize: 14,
-                      color: Colors.grey.shade600,
-                    ),
-                  ).animate().fadeIn(delay: const Duration(milliseconds: 200)),
+          SafeArea(
+            child: Column(
+              children: [
+                 // Theme Toggle in Top Right
+                 Padding(
+                   padding: const EdgeInsets.only(right: 24, top: 10),
+                   child: Align(
+                     alignment: Alignment.topRight,
+                     child: const ThemeToggleButton(),
+                   ),
+                 ),
 
-                  const SizedBox(height: 32),
-
-                  // Glass Form
-                  GlassContainer(
-                    borderRadius: BorderRadius.circular(24),
-                    blur: 15,
-                    opacity: 0.4,
-                    padding: const EdgeInsets.all(24),
-                    child: Column(
-                      children: [
-                        _buildTextField(
-                          controller: controller.nameController,
-                          label: "Full Name",
-                          icon: Icons.person_outline_rounded,
-                        ),
-                        const SizedBox(height: 16),
-                        _buildTextField(
-                          controller: controller.emailController,
-                          label: "Email Address",
-                          icon: Icons.email_outlined,
-                        ),
-                         const SizedBox(height: 16),
-                        _buildTextField(
-                          controller: controller.phoneController,
-                          label: "Phone Number",
-                          icon: Icons.phone_outlined,
-                          keyboardType: TextInputType.phone,
-                        ),
-                        const SizedBox(height: 16),
-                        Obx(() => _buildTextField(
-                          controller: controller.passwordController,
-                          label: "Password",
-                          icon: Icons.lock_outline_rounded,
-                          isObscure: !controller.isPasswordVisible.value,
-                          suffixIcon: IconButton(
-                            icon: Icon(
-                              controller.isPasswordVisible.value 
-                                ? Icons.visibility 
-                                : Icons.visibility_off,
-                              color: Colors.grey.shade600,
+                Expanded(
+                  child: Center(
+                    child: SingleChildScrollView(
+                      padding: const EdgeInsets.symmetric(horizontal: 24),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          // Header
+                          Icon(Icons.person_add_rounded, size: 60, color: Colors.teal.shade700)
+                              .animate().scale(duration: const Duration(milliseconds: 500)),
+                          const SizedBox(height: 16),
+                          Text(
+                            "Create Account",
+                            style: GoogleFonts.poppins(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: Theme.of(context).textTheme.bodyLarge?.color,
                             ),
-                            onPressed: controller.togglePasswordVisibility,
-                          ),
-                        )),
-                        const SizedBox(height: 24),
-
-                        // Sign Up Button
-                        SizedBox(
-                          width: double.infinity,
-                          height: 50,
-                          child: Obx(() => ElevatedButton(
-                            onPressed: controller.isLoading.value ? null : controller.signup,
-                            style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal.shade600,
-                              foregroundColor: Colors.white,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(15),
+                          ).animate().fadeIn().slideY(begin: 0.2),
+                          const SizedBox(height: 8),
+                           Text(
+                            "Join us to find your perfect space",
+                            style: GoogleFonts.poppins(
+                              fontSize: 14,
+                              color: Theme.of(context).textTheme.bodyMedium?.color,
+                            ),
+                          ).animate().fadeIn(delay: const Duration(milliseconds: 200)),
+                  
+                          const SizedBox(height: 32),
+                  
+                          // Glass Form
+                          GlassContainer(
+                            borderRadius: BorderRadius.circular(24),
+                            blur: 15,
+                            opacity: Theme.of(context).brightness == Brightness.dark ? 0.6 : 0.4,
+                            border: Border.all(
+                              color: Theme.of(context).brightness == Brightness.dark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.8),
+                              width: 1.5
+                            ),
+                            padding: const EdgeInsets.all(24),
+                            child: Column(
+                              children: [
+                                _buildTextField(
+                                  context,
+                                  controller: controller.nameController,
+                                  label: "Full Name",
+                                  icon: Icons.person_outline_rounded,
+                                ),
+                                const SizedBox(height: 16),
+                                _buildTextField(
+                                  context,
+                                  controller: controller.emailController,
+                                  label: "Email Address",
+                                  icon: Icons.email_outlined,
+                                ),
+                                 const SizedBox(height: 16),
+                                _buildTextField(
+                                  context,
+                                  controller: controller.phoneController,
+                                  label: "Phone Number",
+                                  icon: Icons.phone_outlined,
+                                  keyboardType: TextInputType.phone,
+                                ),
+                                const SizedBox(height: 16),
+                                Obx(() => _buildTextField(
+                                  context,
+                                  controller: controller.passwordController,
+                                  label: "Password",
+                                  icon: Icons.lock_outline_rounded,
+                                  isObscure: !controller.isPasswordVisible.value,
+                                  suffixIcon: IconButton(
+                                    icon: Icon(
+                                      controller.isPasswordVisible.value 
+                                        ? Icons.visibility 
+                                        : Icons.visibility_off,
+                                      color: Colors.grey.shade600,
+                                    ),
+                                    onPressed: controller.togglePasswordVisibility,
+                                  ),
+                                )),
+                                const SizedBox(height: 24),
+                  
+                                // Sign Up Button
+                                SizedBox(
+                                  width: double.infinity,
+                                  height: 50,
+                                  child: Obx(() => ElevatedButton(
+                                    onPressed: controller.isLoading.value ? null : controller.signup,
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: Colors.teal.shade600,
+                                      foregroundColor: Colors.white,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(15),
+                                      ),
+                                      elevation: 5,
+                                      shadowColor: Colors.teal.shade200,
+                                    ),
+                                    child: controller.isLoading.value 
+                                      ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
+                                      : Text(
+                                        "Sign Up",
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                  )),
+                                ),
+                              ],
+                            ),
+                          ).animate().fadeIn(delay: const Duration(milliseconds: 400)).slideY(begin: 0.1),
+                  
+                          const SizedBox(height: 24),
+                  
+                          // Already have account? Login
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Text(
+                                "Already have an account? ",
+                                style: GoogleFonts.poppins(color: Theme.of(context).textTheme.bodyMedium?.color),
                               ),
-                              elevation: 5,
-                              shadowColor: Colors.teal.shade200,
-                            ),
-                            child: controller.isLoading.value 
-                              ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-                              : Text(
-                                "Sign Up",
-                                style: GoogleFonts.poppins(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                              TextButton(
+                                onPressed: controller.goToLogin,
+                                child: Text(
+                                  "Login",
+                                  style: GoogleFonts.poppins(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.teal.shade700,
+                                  ),
                                 ),
                               ),
-                          )),
-                        ),
-                      ],
+                            ],
+                          ).animate().fadeIn(delay: const Duration(milliseconds: 600)),
+                        ],
+                      ),
                     ),
-                  ).animate().fadeIn(delay: const Duration(milliseconds: 400)).slideY(begin: 0.1),
-
-                  const SizedBox(height: 24),
-
-                  // Already have account? Login
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Already have an account? ",
-                        style: GoogleFonts.poppins(color: Colors.grey.shade600),
-                      ),
-                      TextButton(
-                        onPressed: controller.goToLogin,
-                        child: Text(
-                          "Login",
-                          style: GoogleFonts.poppins(
-                            fontWeight: FontWeight.bold,
-                            color: Colors.teal.shade700,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ).animate().fadeIn(delay: const Duration(milliseconds: 600)),
-                ],
-              ),
+                  ),
+                ),
+              ],
             ),
           ),
         ],
@@ -185,7 +208,8 @@ class SignupView extends GetView<SignupController> {
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildTextField(
+    BuildContext context, {
     required TextEditingController controller,
     required String label,
     required IconData icon,
@@ -193,9 +217,10 @@ class SignupView extends GetView<SignupController> {
     Widget? suffixIcon,
     TextInputType? keyboardType,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.5),
+        color: isDark ? const Color(0xFF2C3E50) : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -209,7 +234,7 @@ class SignupView extends GetView<SignupController> {
         controller: controller,
         obscureText: isObscure,
         keyboardType: keyboardType,
-        style: GoogleFonts.poppins(fontSize: 14),
+        style: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.white : Colors.black87),
         decoration: InputDecoration(
           prefixIcon: Icon(icon, color: Colors.teal.shade400),
           suffixIcon: suffixIcon,

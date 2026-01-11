@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../global_widgets/glass_container.dart';
+import '../../../global_widgets/theme_toggle_button.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/owner_home_controller.dart';
 
@@ -77,24 +78,31 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                             ),
                           ],
                         ),
-                        // Profile Image / Icon
-                        GestureDetector(
-                          onTap: () => Get.toNamed('/profile'),
-                          child: Tooltip(
-                            message: "Profile",
-                            child: Container(
-                              padding: const EdgeInsets.all(2),
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(color: Colors.teal, width: 2),
-                              ),
-                              child: CircleAvatar(
-                                radius: 20,
-                                backgroundColor: isDark ? Colors.grey[800] : Colors.white,
-                                child: Icon(Icons.person, color: isDark ? Colors.white : Colors.grey),
+                        Row(
+                          children: [
+                             // Inserted Toggle
+                            const ThemeToggleButton(),
+                            const SizedBox(width: 12),
+                            // Profile Image / Icon
+                            GestureDetector(
+                              onTap: () => Get.toNamed('/profile'),
+                              child: Tooltip(
+                                message: "Profile",
+                                child: Container(
+                                  padding: const EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    border: Border.all(color: Colors.teal, width: 2),
+                                  ),
+                                  child: CircleAvatar(
+                                    radius: 20,
+                                    backgroundColor: isDark ? Colors.grey[800] : Colors.white,
+                                    child: Icon(Icons.person, color: isDark ? Colors.white : Colors.grey),
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                          ],
                         ),
                       ],
                     ),

@@ -3,6 +3,7 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../global_widgets/glass_container.dart';
+import '../../../routes/app_pages.dart';
 import '../controllers/owner_home_controller.dart';
 
 class OwnerHomeView extends GetView<OwnerHomeController> {
@@ -142,27 +143,36 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                     ),
                   ),
                   const SizedBox(height: 16),
-                  Padding(
+                  SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 24),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         _buildActionButton(
                           icon: Icons.add_home_work_rounded,
                           label: "Add Property",
                           onTap: () => Get.toNamed('/add-property'),
                         ),
-                         _buildActionButton(
+                        const SizedBox(width: 24),
+                        _buildActionButton(
                           icon: Icons.qr_code_scanner_rounded,
                           label: "Scan QR",
                           onTap: () => Get.toNamed('/scan-qr'),
                         ),
-                         _buildActionButton(
+                        const SizedBox(width: 24),
+                        _buildActionButton(
                           icon: Icons.analytics_outlined,
                           label: "Analytics",
                           onTap: () => Get.toNamed('/analytics'),
                         ),
-                         _buildActionButton(
+                        const SizedBox(width: 24),
+                        _buildActionButton(
+                          icon: Icons.bookmark_border_rounded,
+                          label: "Saved",
+                          onTap: () => Get.toNamed(Routes.SAVED_PROPERTIES),
+                        ),
+                        const SizedBox(width: 24),
+                        _buildActionButton(
                           icon: Icons.settings_outlined,
                           label: "Settings",
                           onTap: () => Get.toNamed('/settings'),

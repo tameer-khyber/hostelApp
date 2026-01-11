@@ -1,15 +1,21 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../../routes/app_pages.dart';
 
 class SettingsController extends GetxController {
   final isDarkMode = false.obs;
   final notificationsEnabled = true.obs;
 
-  void toggleTheme(bool value) {
+  Future<void> toggleTheme(bool value) async {
     isDarkMode.value = value;
-    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
-     Get.snackbar(
+    
+    // Save preference to local storage
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setBool('isDarkMode', value);
+    
+    // Theme will change automatically via Obx in main.dart
+    Get.snackbar(
       "Theme Changed", 
       value ? "Dark Mode Enabled" : "Light Mode Enabled",
       snackPosition: SnackPosition.BOTTOM,
@@ -19,6 +25,11 @@ class SettingsController extends GetxController {
       borderRadius: 10,
       margin: const EdgeInsets.all(10),
     );
+  }
+  
+  Future<void> _loadThemePreference() async {
+    final prefs = await SharedPreferences.getInstance();
+    isDarkMode.value = prefs.getBool('isDarkMode') ?? false;
   }
 
   void toggleNotifications(bool value) {
@@ -79,5 +90,6 @@ class SettingsController extends GetxController {
   @override
   void onInit() {
     super.onInit();
+    _loadThemePreference();
   }
 }

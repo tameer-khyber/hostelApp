@@ -76,16 +76,22 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           ],
                         ),
                         // Profile Image / Icon
-                        Container(
-                          padding: const EdgeInsets.all(2),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            border: Border.all(color: Colors.teal, width: 2),
-                          ),
-                          child: const CircleAvatar(
-                            radius: 20,
-                            backgroundColor: Colors.white,
-                            child: Icon(Icons.person, color: Colors.grey),
+                        GestureDetector(
+                          onTap: () => Get.toNamed('/profile'),
+                          child: Tooltip(
+                            message: "Profile",
+                            child: Container(
+                              padding: const EdgeInsets.all(2),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                border: Border.all(color: Colors.teal, width: 2),
+                              ),
+                              child: const CircleAvatar(
+                                radius: 20,
+                                backgroundColor: Colors.white,
+                                child: Icon(Icons.person, color: Colors.grey),
+                              ),
+                            ),
                           ),
                         ),
                       ],
@@ -144,25 +150,22 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                         _buildActionButton(
                           icon: Icons.add_home_work_rounded,
                           label: "Add Property",
-                          onTap: () {
-                             // Navigate to Add Property
-                             Get.toNamed('/property-listing'); // Assuming this or similar route exists/will exist
-                          },
+                          onTap: () => Get.toNamed('/add-property'),
                         ),
                          _buildActionButton(
                           icon: Icons.qr_code_scanner_rounded,
                           label: "Scan QR",
-                          onTap: () {},
+                          onTap: () => Get.toNamed('/scan-qr'),
                         ),
                          _buildActionButton(
                           icon: Icons.analytics_outlined,
                           label: "Analytics",
-                          onTap: () {},
+                          onTap: () => Get.toNamed('/analytics'),
                         ),
                          _buildActionButton(
                           icon: Icons.settings_outlined,
                           label: "Settings",
-                          onTap: () {},
+                          onTap: () => Get.toNamed('/settings'),
                         ),
                       ],
                     ),
@@ -312,23 +315,26 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
   Widget _buildActionButton({required IconData icon, required String label, required VoidCallback onTap}) {
     return GestureDetector(
       onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.white.withOpacity(0.6),
-              shape: BoxShape.circle,
-              boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+      child: Tooltip(
+        message: label,
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.6),
+                shape: BoxShape.circle,
+                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+              ),
+              child: Icon(icon, color: const Color(0xFF2C3E50), size: 24),
             ),
-            child: Icon(icon, color: const Color(0xFF2C3E50), size: 24),
-          ),
-          const SizedBox(height: 8),
-          Text(
-            label,
-            style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xFF2C3E50)),
-          ),
-        ],
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xFF2C3E50)),
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -344,15 +350,18 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
            Get.toNamed('/bookings-history'); // Or owner specific bookings
         }
       },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(
-            icon, 
-            color: isActive ? Colors.teal : Colors.grey, 
-            size: 28
-          ),
-        ],
+      child: Tooltip(
+        message: label,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              icon, 
+              color: isActive ? Colors.teal : Colors.grey, 
+              size: 28
+            ),
+          ],
+        ),
       ),
     );
   }

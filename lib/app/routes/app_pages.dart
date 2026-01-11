@@ -40,6 +40,14 @@ import '../modules/chat/bindings/chat_binding.dart';
 import '../modules/chat/views/chat_view.dart';
 import '../modules/owner_home/bindings/owner_home_binding.dart';
 import '../modules/owner_home/views/owner_home_view.dart';
+import '../modules/add_property/bindings/add_property_binding.dart';
+import '../modules/add_property/views/add_property_view.dart';
+import '../modules/scan_qr/bindings/scan_qr_binding.dart';
+import '../modules/scan_qr/views/scan_qr_view.dart';
+import '../modules/analytics/bindings/analytics_binding.dart';
+import '../modules/analytics/views/analytics_view.dart';
+import '../modules/settings/bindings/settings_binding.dart';
+import '../modules/settings/views/settings_view.dart';
 
 part 'app_routes.dart';
 
@@ -148,6 +156,26 @@ class AppPages {
       name: _Paths.OWNER_HOME,
       page: () => const OwnerHomeView(),
       binding: OwnerHomeBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADD_PROPERTY,
+      page: () => const AddPropertyView(),
+      binding: AddPropertyBinding(),
+    ),
+    GetPage(
+      name: _Paths.SCAN_QR,
+      page: () => const ScanQrView(),
+      binding: ScanQrBinding(),
+    ),
+    GetPage(
+      name: _Paths.ANALYTICS,
+      page: () => const AnalyticsView(),
+      binding: AnalyticsBinding(),
+    ),
+    GetPage(
+      name: _Paths.SETTINGS,
+      page: () => const SettingsView(),
+      binding: SettingsBinding(),
     ),
   ];
 }

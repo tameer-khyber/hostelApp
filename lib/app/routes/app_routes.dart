@@ -19,8 +19,11 @@ abstract class Routes {
   static const PROPERTY_DETAIL = _Paths.PROPERTY_DETAIL;
   static const SAVED_PROPERTIES = _Paths.SAVED_PROPERTIES;
   static const BOOKING = _Paths.BOOKING;
-  static const BOOKINGS_HISTORY = _Paths.BOOKINGS_HISTORY;
-  static const PAYMENT = _Paths.PAYMENT;
+  static const OWNER_HOME = _Paths.OWNER_HOME;
+  static const ADD_PROPERTY = _Paths.ADD_PROPERTY;
+  static const SCAN_QR = _Paths.SCAN_QR;
+  static const ANALYTICS = _Paths.ANALYTICS;
+  static const SETTINGS = _Paths.SETTINGS;
 }
 
 abstract class _Paths {
@@ -45,4 +48,8 @@ abstract class _Paths {
   static const PAYMENT = '/payment';
   static const CHAT = '/chat';
   static const OWNER_HOME = '/owner-home';
+  static const ADD_PROPERTY = '/add-property';
+  static const SCAN_QR = '/scan-qr';
+  static const ANALYTICS = '/analytics';
+  static const SETTINGS = '/settings';
 }

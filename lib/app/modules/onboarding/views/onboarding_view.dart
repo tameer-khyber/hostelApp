@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
+import '../../../global_widgets/theme_toggle_button.dart';
 import '../controllers/onboarding_controller.dart';
 
 class OnboardingView extends GetView<OnboardingController> {
@@ -92,6 +93,13 @@ class OnboardingView extends GetView<OnboardingController> {
                 ),
               ),
             ),
+          ),
+
+          // Theme Toggle
+          const Positioned(
+            top: 40,
+            left: 20,
+            child: ThemeToggleButton(),
           ),
 
           // 5. Bottom Controls (Indicators & Button)

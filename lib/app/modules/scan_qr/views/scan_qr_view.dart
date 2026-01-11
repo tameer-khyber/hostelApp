@@ -30,26 +30,11 @@ class ScanQrView extends GetView<ScanQrController> {
         ),
         actions: [
           IconButton(
-            icon: ValueListenableBuilder(
-              valueListenable: controller.cameraController.torchState,
-              builder: (context, state, child) {
-                switch (state) {
-                  case TorchState.off:
-                    return const Icon(Icons.flash_off, color: Colors.grey);
-                  case TorchState.on:
-                    return const Icon(Icons.flash_on, color: Colors.yellow);
-                }
-              },
-            ),
+            icon: const Icon(Icons.flash_on, color: Colors.white),
             onPressed: () => controller.cameraController.toggleTorch(),
           ),
           IconButton(
-            icon: ValueListenableBuilder(
-              valueListenable: controller.cameraController.cameraFacingState,
-              builder: (context, state, child) {
-                   return const Icon(Icons.cameraswitch, color: Colors.white);
-              },
-            ),
+            icon: const Icon(Icons.cameraswitch, color: Colors.white),
             onPressed: () => controller.cameraController.switchCamera(),
           ),
         ],

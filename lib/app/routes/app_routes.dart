@@ -24,6 +24,7 @@ abstract class Routes {
   static const SCAN_QR = _Paths.SCAN_QR;
   static const ANALYTICS = _Paths.ANALYTICS;
   static const SETTINGS = _Paths.SETTINGS;
+  static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
 }
 
 abstract class _Paths {
@@ -52,4 +53,5 @@ abstract class _Paths {
   static const SCAN_QR = '/scan-qr';
   static const ANALYTICS = '/analytics';
   static const SETTINGS = '/settings';
+  static const NOTIFICATIONS = '/notifications';
 }

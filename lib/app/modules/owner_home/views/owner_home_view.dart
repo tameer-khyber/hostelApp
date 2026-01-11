@@ -194,7 +194,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
                         ),
                          GestureDetector(
-                           onTap: () {},
+                           onTap: () => Get.toNamed('/notifications'),
                            child: Text("View all", style: GoogleFonts.poppins(fontSize: 12, color: Colors.teal)),
                          ),
                       ],
@@ -209,45 +209,61 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                     itemCount: controller.notifications.length,
                     itemBuilder: (context, index) {
                       final notif = controller.notifications[index];
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: GlassContainer(
-                          borderRadius: BorderRadius.circular(15),
-                          blur: 10,
-                          opacity: 0.5,
-                          padding: const EdgeInsets.all(12),
-                          child: Row(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.5),
-                                  shape: BoxShape.circle,
+                      return GestureDetector(
+                        onTap: () {
+                           Get.snackbar(
+                             notif['title']!,
+                             notif['body']!,
+                             snackPosition: SnackPosition.TOP,
+                             backgroundColor: Colors.white.withOpacity(0.9),
+                             colorText: Colors.black,
+                             margin: const EdgeInsets.all(10),
+                             borderRadius: 10,
+                             duration: const Duration(seconds: 4),
+                           );
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: GlassContainer(
+                            borderRadius: BorderRadius.circular(15),
+                            blur: 10,
+                            opacity: 0.5,
+                            padding: const EdgeInsets.all(12),
+                            child: Row(
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(10),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white.withOpacity(0.5),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  child: const Icon(Icons.notifications_active_outlined, color: Colors.teal, size: 20),
                                 ),
-                                child: const Icon(Icons.notifications_active_outlined, color: Colors.teal, size: 20),
-                              ),
-                              const SizedBox(width: 16),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      notif['title']!,
-                                      style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      notif['body']!,
-                                      style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
-                                    ),
-                                  ],
+                                const SizedBox(width: 16),
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                        notif['title']!,
+                                        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        notif['body']!,
+                                        maxLines: 2,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: GoogleFonts.poppins(fontSize: 12, color: Colors.grey[700]),
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ),
-                              Text(
-                                notif['time']!,
-                                style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey[500]),
-                              ),
-                            ],
+                                Text(
+                                  notif['time']!,
+                                  style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey[500]),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ).animate().fadeIn(delay: (500 + index * 100).ms).slideX();
@@ -330,18 +346,38 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
         child: Column(
           children: [
             Container(
-              padding: const EdgeInsets.all(12),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.6),
+                gradient: LinearGradient(
+                  colors: [Colors.white.withOpacity(0.7), Colors.white.withOpacity(0.3)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
                 shape: BoxShape.circle,
-                boxShadow: [BoxShadow(color: Colors.grey.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 4))],
+                boxShadow: [
+                   BoxShadow(
+                     color: Colors.teal.withOpacity(0.1),
+                     blurRadius: 10, 
+                     offset: const Offset(0, 5)
+                   ),
+                   BoxShadow(
+                     color: Colors.white.withOpacity(0.5),
+                     blurRadius: 5, 
+                     offset: const Offset(-2, -2)
+                   ),
+                ],
+                border: Border.all(color: Colors.white.withOpacity(0.5), width: 1.5),
               ),
-              child: Icon(icon, color: const Color(0xFF2C3E50), size: 24),
+              child: Icon(icon, color: Colors.teal.shade700, size: 26),
             ),
-            const SizedBox(height: 8),
+            const SizedBox(height: 10),
             Text(
               label,
-              style: GoogleFonts.poppins(fontSize: 12, fontWeight: FontWeight.w500, color: const Color(0xFF2C3E50)),
+              style: GoogleFonts.poppins(
+                fontSize: 12, 
+                fontWeight: FontWeight.w600, 
+                color: const Color(0xFF34495E)
+              ),
             ),
           ],
         ),

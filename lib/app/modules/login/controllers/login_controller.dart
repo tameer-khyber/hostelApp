@@ -34,7 +34,7 @@ class LoginController extends GetxController {
         : true; // Default to owner if unknown
 
     if (isOwner) {
-      Get.offAllNamed(Routes.HOME);
+      Get.offAllNamed(Routes.OWNER_HOME);
     } else {
       Get.offAllNamed(Routes.TENANT_HOME);
     }

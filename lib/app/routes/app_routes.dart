@@ -44,4 +44,5 @@ abstract class _Paths {
   static const BOOKINGS_HISTORY = '/bookings-history';
   static const PAYMENT = '/payment';
   static const CHAT = '/chat';
+  static const OWNER_HOME = '/owner-home';
 }

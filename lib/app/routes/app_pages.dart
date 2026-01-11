@@ -38,6 +38,8 @@ import '../modules/payment/bindings/payment_binding.dart';
 import '../modules/payment/views/payment_view.dart';
 import '../modules/chat/bindings/chat_binding.dart';
 import '../modules/chat/views/chat_view.dart';
+import '../modules/owner_home/bindings/owner_home_binding.dart';
+import '../modules/owner_home/views/owner_home_view.dart';
 
 part 'app_routes.dart';
 
@@ -141,6 +143,11 @@ class AppPages {
       name: _Paths.CHAT,
       page: () => const ChatView(),
       binding: ChatBinding(),
+    ),
+    GetPage(
+      name: _Paths.OWNER_HOME,
+      page: () => const OwnerHomeView(),
+      binding: OwnerHomeBinding(),
     ),
   ];
 }

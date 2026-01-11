@@ -5,6 +5,12 @@ import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
 import '../../../global_widgets/theme_toggle_button.dart';
+import '../../../global_widgets/buttons/primary_button.dart';
+import '../../../global_widgets/buttons/social_button.dart';
+import '../../../global_widgets/inputs/app_text_field.dart';
+import '../../../global_widgets/inputs/password_field.dart';
+import '../../../config/constants/app_strings.dart';
+import '../../../config/constants/app_constants.dart';
 import '../../../routes/app_pages.dart';
 import '../controllers/login_controller.dart';
 
@@ -135,35 +141,22 @@ class LoginView extends GetView<LoginController> {
                           const SizedBox(height: 40),
     
                           // Email Field
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text("Email", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge?.color)),
-                          ),
-                          const SizedBox(height: 8),
-                          _buildModernInput(
-                            context,
+                          AppTextField(
                             controller: controller.emailController,
-                            hint: 'Enter your email',
-                            icon: Icons.email_outlined,
+                            hintText: AppStrings.enterEmail,
+                            labelText: AppStrings.email,
+                            prefixIcon: Icons.email_outlined,
+                            keyboardType: TextInputType.emailAddress,
                           ),
     
                           const SizedBox(height: 20),
     
                           // Password Field
-                          Align(
-                            alignment: Alignment.centerLeft,
-                            child: Text("Password", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge?.color)),
-                          ),
-                          const SizedBox(height: 8),
-                          Obx(() => _buildModernInput(
-                            context,
+                          PasswordField(
                             controller: controller.passwordController,
-                            hint: 'Enter your password',
-                            icon: Icons.lock_outline,
-                            isPassword: true,
-                            isVisible: controller.isPasswordVisible.value,
-                            onVisibilityToggle: controller.togglePasswordVisibility,
-                          )),
+                            labelText: AppStrings.password,
+                            hintText: AppStrings.enterPassword,
+                          ),
     
                           const SizedBox(height: 10),
                           Align(
@@ -183,11 +176,11 @@ class LoginView extends GetView<LoginController> {
                           const SizedBox(height: 20),
     
                           // Main Login Button
-                          _buildGradientButton(
-                            text: "Log In",
+                          Obx(() => PrimaryButton(
+                            text: AppStrings.login,
                             onPressed: controller.login,
                             isLoading: controller.isLoading.value,
-                          ),
+                          )),
     
                           const SizedBox(height: 25),
                           
@@ -205,21 +198,20 @@ class LoginView extends GetView<LoginController> {
                           const SizedBox(height: 25),
     
                           // Social Buttons
-                          _buildSocialButtonFull(
-                            text: "Continue with Google",
-                            icon: Icons.g_mobiledata_rounded, // Using built-in icon as placeholder
-                            color: Colors.redAccent,
-                            textColor: const Color(0xFF37474F),
+                          SocialButton(
+                            text: AppStrings.continueWithGoogle,
+                            icon: Icons.g_mobiledata_rounded,
                             iconColor: Colors.red,
+                            onPressed: () {},
                           ),
-                          const SizedBox(height: 15),
-                          _buildSocialButtonFull(
-                            text: "Continue with Facebook",
+                          const SizedBox(height: AppConstants.spacingM),
+                          SocialButton(
+                            text: AppStrings.continueWithFacebook,
                             icon: Icons.facebook,
-                            color: const Color(0xFF1877F2),
-                            textColor: Colors.white,
                             iconColor: Colors.white,
-                            backgroundColor: const Color(0xFF1877F2), // Blue Background
+                            backgroundColor: const Color(0xFF1877F2),
+                            textColor: Colors.white,
+                            onPressed: () {},
                           ),
                           
                           const SizedBox(height: 30),
@@ -252,132 +244,5 @@ class LoginView extends GetView<LoginController> {
       ),
     );
   }
-
-  Widget _buildModernInput(
-    BuildContext context, {
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    bool isPassword = false,
-    bool isVisible = false,
-    VoidCallback? onVisibilityToggle,
-  }) {
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    return Container(
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF2C3E50) : Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: TextField(
-        controller: controller,
-        obscureText: isPassword && !isVisible,
-        style: GoogleFonts.poppins(color: isDark ? Colors.white : Colors.black87),
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: GoogleFonts.poppins(color: Colors.grey.shade400),
-          prefixIcon: Icon(icon, color: Colors.grey.shade400, size: 22),
-          suffixIcon: isPassword
-              ? IconButton(
-                  icon: Icon(
-                    isVisible ? Icons.visibility : Icons.visibility_off,
-                    color: Colors.grey.shade400,
-                    size: 20,
-                  ),
-                  onPressed: onVisibilityToggle,
-                )
-              : null,
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(vertical: 16),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGradientButton({required String text, required VoidCallback onPressed, required bool isLoading}) {
-    return Container(
-      width: double.infinity,
-      height: 55,
-      decoration: BoxDecoration(
-        gradient: const LinearGradient(
-          colors: [Color(0xFFFF8A65), Color(0xFFFFB74D)], // Peach/Orange Gradient
-          begin: Alignment.centerLeft,
-          end: Alignment.centerRight,
-        ),
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: const Color(0xFFFF8A65).withOpacity(0.4),
-            blurRadius: 15,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: MaterialButton(
-        onPressed: isLoading ? null : onPressed,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        child: isLoading
-            ? const SizedBox(width: 24, height: 24, child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2))
-            : Text(
-                text,
-                style: GoogleFonts.poppins(
-                  fontSize: 18,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
-      ),
-    );
-  }
-
-  Widget _buildSocialButtonFull({
-    required String text,
-    required IconData icon,
-    required Color color,
-    required Color textColor,
-    Color? backgroundColor,
-    Color? iconColor,
-  }) {
-    return Container(
-      width: double.infinity,
-      height: 55,
-      decoration: BoxDecoration(
-        color: backgroundColor ?? Colors.white,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: backgroundColor == null ? Border.all(color: Colors.grey.shade200) : null,
-      ),
-      child: MaterialButton(
-        onPressed: () {},
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: iconColor ?? color, size: 24),
-            const SizedBox(width: 12),
-            Text(
-              text,
-              style: GoogleFonts.poppins(
-                fontSize: 15,
-                fontWeight: FontWeight.w600,
-                color: textColor,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
+

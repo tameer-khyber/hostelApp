@@ -11,12 +11,15 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return DefaultTabController(
       length: 2,
       child: Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          title: Text("My Bookings", style: GoogleFonts.poppins(color: const Color(0xFF2C3E50), fontWeight: FontWeight.bold)),
+          title: Text("My Bookings", style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
           centerTitle: true,
           backgroundColor: Colors.transparent,
           elevation: 0,
@@ -24,7 +27,7 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
           bottom: TabBar(
             indicatorColor: Colors.teal,
             labelColor: Colors.teal,
-            unselectedLabelColor: Colors.grey,
+            unselectedLabelColor: isDark ? Colors.grey[500] : Colors.grey,
             labelStyle: GoogleFonts.poppins(fontWeight: FontWeight.w600),
             tabs: const [
               Tab(text: "Active"),
@@ -34,13 +37,15 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
         ),
         body: Stack(
           children: [
-             // Background
+             // Background (Theme Aware)
              Container(
-              decoration: const BoxDecoration(
+               decoration: BoxDecoration(
                 gradient: LinearGradient(
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
-                  colors: [Color(0xFFE0F7FA), Color(0xFFE8EAF6), Color(0xFFF3E5F5)],
+                  colors: isDark
+                      ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                      : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
                 ),
               ),
             ),
@@ -63,12 +68,12 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
                             final isSelected = controller.currentSort.value == option;
                             return ChoiceChip(
                               label: Text(option, style: GoogleFonts.poppins(
-                                color: isSelected ? Colors.white : Colors.grey[700],
+                                color: isSelected ? Colors.white : (isDark ? Colors.grey[300] : Colors.grey[700]),
                                 fontSize: 12
                               )),
                               selected: isSelected,
                               onSelected: (_) => controller.setSort(option),
-                              backgroundColor: Colors.white.withOpacity(0.5),
+                              backgroundColor: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
                               selectedColor: Colors.teal,
                               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide.none),
                             );
@@ -82,8 +87,8 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
                   Expanded(
                     child: TabBarView(
                       children: [
-                        _buildBookingList(isActive: true),
-                        _buildBookingList(isActive: false),
+                        _buildBookingList(context, isActive: true),
+                        _buildBookingList(context, isActive: false),
                       ],
                     ),
                   ),
@@ -96,7 +101,10 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
     );
   }
 
-  Widget _buildBookingList({required bool isActive}) {
+  Widget _buildBookingList(BuildContext context, {required bool isActive}) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Obx(() {
       final bookings = isActive ? controller.activeBookings : controller.pastBookings;
       
@@ -105,9 +113,9 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Icon(isActive ? Icons.calendar_today_rounded : Icons.history_rounded, size: 60, color: Colors.grey[300]),
+              Icon(isActive ? Icons.calendar_today_rounded : Icons.history_rounded, size: 60, color: isDark ? Colors.grey[700] : Colors.grey[300]),
               const SizedBox(height: 16),
-              Text(isActive ? "No active bookings" : "No past bookings", style: GoogleFonts.poppins(color: Colors.grey[500], fontSize: 16)),
+              Text(isActive ? "No active bookings" : "No past bookings", style: GoogleFonts.poppins(color: isDark ? Colors.grey[500] : Colors.grey[500], fontSize: 16)),
             ],
           ),
         );
@@ -122,7 +130,7 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
             child: GlassContainer(
               borderRadius: BorderRadius.circular(20),
               blur: 10,
-              opacity: 0.6,
+              opacity: isDark ? 0.3 : 0.6,
               padding: const EdgeInsets.all(16),
               child: Column(
                 children: [
@@ -136,15 +144,20 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
                         decoration: BoxDecoration(
                           color: Colors.grey[300],
                           borderRadius: BorderRadius.circular(12),
+                          image: booking.property.imageUrl.isNotEmpty
+                            ? DecorationImage(image: NetworkImage(booking.property.imageUrl), fit: BoxFit.cover)
+                            : null
                         ),
-                        child: const Icon(Icons.image, color: Colors.grey),
+                        child: booking.property.imageUrl.isEmpty 
+                           ? const Icon(Icons.image, color: Colors.grey)
+                           : null,
                       ),
                       const SizedBox(width: 16),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text(booking.property.name, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16, color: const Color(0xFF2C3E50))),
+                            Text(booking.property.name, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16, color: theme.textTheme.bodyLarge?.color)),
                             const SizedBox(height: 4),
                             Row(
                               children: [
@@ -176,7 +189,7 @@ class BookingsHistoryView extends GetView<BookingsHistoryController> {
                       ),
                     ],
                   ),
-                  const Divider(),
+                  Divider(color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [

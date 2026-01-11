@@ -11,21 +11,21 @@ class OnboardingView extends GetView<OnboardingController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       body: Stack(
         children: [
-           // 1. Background (Shared Light Theme)
+           // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+             decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Very light cyan
-                  Color(0xFFE1F5FE), // Light Blue
-                  Color(0xFFB3E5FC), // Light Blue 100
-                  Color(0xFF81D4FA), // Light Blue 200
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE1F5FE), const Color(0xFFB3E5FC), const Color(0xFF81D4FA)],
               ),
             ),
           ),
@@ -41,8 +41,8 @@ class OnboardingView extends GetView<OnboardingController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(0.4),
-                    Colors.white.withOpacity(0.0),
+                    isDark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.4),
+                    Colors.transparent,
                   ],
                 ),
               ),
@@ -87,7 +87,7 @@ class OnboardingView extends GetView<OnboardingController> {
                 'Skip',
                 style: GoogleFonts.poppins(
                   fontSize: 16,
-                  color: Colors.grey.shade700,
+                  color: isDark ? Colors.grey[400] : Colors.grey.shade700,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -113,7 +113,7 @@ class OnboardingView extends GetView<OnboardingController> {
                         decoration: BoxDecoration(
                           color: controller.currentPage.value == index 
                               ? Colors.teal.shade400 
-                              : Colors.grey.shade400,
+                              : (isDark ? Colors.grey[700] : Colors.grey.shade400),
                           borderRadius: BorderRadius.circular(4),
                         ),
                       );
@@ -126,8 +126,8 @@ class OnboardingView extends GetView<OnboardingController> {
                     child: GlassContainer(
                       borderRadius: BorderRadius.circular(30),
                       blur: 10,
-                      opacity: 0.6,
-                      border: Border.all(color: Colors.white, width: 2),
+                      opacity: isDark ? 0.3 : 0.6,
+                      border: Border.all(color: Colors.white.withOpacity(isDark ? 0.2 : 1), width: 2),
                       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
@@ -137,7 +137,7 @@ class OnboardingView extends GetView<OnboardingController> {
                             style: GoogleFonts.poppins(
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
-                              color: Colors.teal.shade700,
+                              color: isDark ? Colors.tealAccent : Colors.teal.shade700,
                             ),
                           ),
                           const SizedBox(width: 8),
@@ -145,7 +145,7 @@ class OnboardingView extends GetView<OnboardingController> {
                             controller.currentPage.value == 2 
                               ? Icons.check_circle_outline_rounded 
                               : Icons.arrow_forward_rounded,
-                            color: Colors.teal.shade700,
+                            color: isDark ? Colors.tealAccent : Colors.teal.shade700,
                           ),
                         ],
                       ),
@@ -177,6 +177,9 @@ class _OnboardingSlide extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 30),
       child: Column(
@@ -197,7 +200,7 @@ class _OnboardingSlide extends StatelessWidget {
            GlassContainer(
              borderRadius: BorderRadius.circular(20),
              blur: 15,
-             opacity: 0.4,
+             opacity: isDark ? 0.3 : 0.4,
              padding: const EdgeInsets.all(24),
              child: Column(
                children: [
@@ -207,7 +210,7 @@ class _OnboardingSlide extends StatelessWidget {
                    style: GoogleFonts.poppins(
                      fontSize: 28,
                      fontWeight: FontWeight.bold,
-                     color: const Color(0xFF2C3E50),
+                     color: theme.textTheme.bodyLarge?.color,
                    ),
                  ),
                  const SizedBox(height: 16),
@@ -217,7 +220,7 @@ class _OnboardingSlide extends StatelessWidget {
                    style: GoogleFonts.poppins(
                      fontSize: 15,
                      height: 1.5,
-                     color: Colors.black87,
+                     color: theme.textTheme.bodyMedium?.color,
                    ),
                  ),
                ],

@@ -12,6 +12,8 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
   @override
   Widget build(BuildContext context) {
     final property = controller.property.value;
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -26,7 +28,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
             blur: 10,
             padding: EdgeInsets.zero,
             child: IconButton(
-              icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF2C3E50), size: 18),
+              icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color, size: 18),
               onPressed: () => Get.back(),
             ),
           ),
@@ -53,13 +55,15 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
       ),
       body: Stack(
         children: [
-           // 1. Background (Shared)
+           // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [Color(0xFFE0F7FA), Color(0xFFE8EAF6), Color(0xFFF3E5F5)],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
               ),
             ),
           ),
@@ -77,10 +81,15 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                     children: [
                       Container(
                         width: double.infinity,
-                        color: Colors.grey.withOpacity(0.2), // Placeholder for Image
-                        child: Center(
-                          child: Icon(Icons.image_rounded, size: 80, color: Colors.grey[400]),
+                        decoration: BoxDecoration(
+                           color: isDark ? Colors.grey[800] : Colors.grey[200],
+                           image: property.imageUrl.isNotEmpty 
+                            ? DecorationImage(image: NetworkImage(property.imageUrl), fit: BoxFit.cover) 
+                            : null,
                         ),
+                        child: property.imageUrl.isEmpty 
+                            ? Center(child: Icon(Icons.image_rounded, size: 80, color: Colors.grey[400]))
+                            : null,
                       ),
                       Positioned(
                         bottom: 0,
@@ -92,7 +101,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                             gradient: LinearGradient(
                               begin: Alignment.bottomCenter,
                               end: Alignment.topCenter,
-                              colors: [Colors.black.withOpacity(0.4), Colors.transparent],
+                              colors: [Colors.black.withOpacity(0.6), Colors.transparent],
                             ),
                           ),
                         ),
@@ -105,9 +114,16 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                 Transform.translate(
                   offset: const Offset(0, -30),
                   child: Container(
-                    decoration: const BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1E2746) : Colors.white,
+                      borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+                      boxShadow: [
+                         BoxShadow(
+                           color: Colors.black.withOpacity(0.1),
+                           blurRadius: 20,
+                           offset: const Offset(0, -5),
+                         )
+                      ]
                     ),
                     padding: const EdgeInsets.all(24),
                     child: Column(
@@ -121,7 +137,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                              Expanded(
                                child: Text(
                                  property.name,
-                                 style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                                 style: GoogleFonts.poppins(fontSize: 22, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                                ),
                              ),
                              Container(
@@ -158,25 +174,25 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                          const SizedBox(height: 24),
                          
                          // Full Description
-                         Text("Description", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+                         Text("Description", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                          const SizedBox(height: 8),
                          Text(
                            property.description,
-                           style: GoogleFonts.poppins(color: Colors.grey[700], height: 1.5),
+                           style: GoogleFonts.poppins(color: theme.textTheme.bodyMedium?.color ?? Colors.grey[700], height: 1.5),
                          ),
 
                          const SizedBox(height: 24),
 
                          // Amenities
-                         Text("Amenities", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+                         Text("Amenities", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                          const SizedBox(height: 12),
                          Wrap(
                            spacing: 12,
                            runSpacing: 12,
                            children: property.amenities.map((amenity) => Chip(
-                             label: Text(amenity, style: GoogleFonts.poppins(color: Colors.teal)),
-                             backgroundColor: Colors.teal.withOpacity(0.1),
-                             avatar: const Icon(Icons.check_circle_outline_rounded, color: Colors.teal, size: 18),
+                             label: Text(amenity, style: GoogleFonts.poppins(color: isDark ? Colors.tealAccent : Colors.teal)),
+                             backgroundColor: isDark ? Colors.teal.withOpacity(0.2) : Colors.teal.withOpacity(0.1),
+                             avatar: Icon(Icons.check_circle_outline_rounded, color: isDark ? Colors.tealAccent : Colors.teal, size: 18),
                              side: BorderSide.none,
                            )).toList(),
                          ),
@@ -184,16 +200,16 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                          const SizedBox(height: 24),
 
                          // Rules
-                         Text("House Rules", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+                         Text("House Rules", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                          const SizedBox(height: 12),
                          Column(
                            children: property.rules.map((rule) => Padding(
                              padding: const EdgeInsets.only(bottom: 8),
                              child: Row(
                                children: [
-                                 Container(width: 6, height: 6, decoration: const BoxDecoration(color: Colors.grey, shape: BoxShape.circle)),
+                                 Container(width: 6, height: 6, decoration: BoxDecoration(color: isDark ? Colors.grey[400] : Colors.grey, shape: BoxShape.circle)),
                                  const SizedBox(width: 10),
-                                 Text(rule, style: GoogleFonts.poppins(color: Colors.grey[700])),
+                                 Text(rule, style: GoogleFonts.poppins(color: theme.textTheme.bodyMedium?.color ?? Colors.grey[700])),
                                ],
                              ),
                            )).toList(),
@@ -205,7 +221,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                          Row(
                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                            children: [
-                             Text("Reviews", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50))),
+                             Text("Reviews", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                              TextButton.icon(
                                onPressed: () {
                                   Get.dialog(AddReviewDialog(
@@ -234,9 +250,9 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                                 margin: const EdgeInsets.only(bottom: 16),
                                 padding: const EdgeInsets.all(16),
                                 decoration: BoxDecoration(
-                                  color: Colors.white.withOpacity(0.6),
+                                  color: isDark ? Colors.white.withOpacity(0.05) : Colors.white.withOpacity(0.6),
                                   borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(color: Colors.white.withOpacity(0.5)),
+                                  border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5)),
                                 ),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -252,7 +268,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                                         Column(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           children: [
-                                            Text(review.authorName, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50))),
+                                            Text(review.authorName, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                                             Text(review.date, style: GoogleFonts.poppins(fontSize: 10, color: Colors.grey[600])),
                                           ],
                                         ),
@@ -274,7 +290,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                                       ],
                                     ),
                                     const SizedBox(height: 8),
-                                    Text(review.text, style: GoogleFonts.poppins(color: Colors.grey[800], fontSize: 13)),
+                                    Text(review.text, style: GoogleFonts.poppins(color: theme.textTheme.bodyMedium?.color ?? Colors.grey[800], fontSize: 13)),
                                   ],
                                 ),
                               )).toList(),
@@ -284,12 +300,12 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                          const SizedBox(height: 24),
                          
                          // Owner Info
-                         Text("Owner", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold)),
+                         Text("Owner", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                          const SizedBox(height: 12),
                          Container(
                            padding: const EdgeInsets.all(16),
                            decoration: BoxDecoration(
-                             color: Colors.grey[100],
+                             color: isDark ? Colors.white.withOpacity(0.05) : Colors.grey[100],
                              borderRadius: BorderRadius.circular(16),
                            ),
                            child: Row(
@@ -302,7 +318,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                                Column(
                                  crossAxisAlignment: CrossAxisAlignment.start,
                                  children: [
-                                   Text(property.ownerName, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16)),
+                                   Text(property.ownerName, style: GoogleFonts.poppins(fontWeight: FontWeight.bold, fontSize: 16, color: theme.textTheme.bodyLarge?.color)),
                                    Text("Owner Rating: ${property.ownerRating}", style: GoogleFonts.poppins(color: Colors.grey, fontSize: 12)),
                                  ],
                                ),
@@ -340,7 +356,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
             child: GlassContainer(
               borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
               blur: 15,
-              opacity: 0.9,
+              opacity: isDark ? 0.95 : 0.9,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
               child: Row(
                 children: [
@@ -348,7 +364,7 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text("Price", style: GoogleFonts.poppins(color: Colors.grey[700], fontSize: 12)),
+                      Text("Price", style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 12)),
                       Text(property.price, style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.teal)),
                     ],
                   ),

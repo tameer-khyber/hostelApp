@@ -10,34 +10,42 @@ class SavedPropertiesView extends GetView<SavedPropertiesController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_rounded, color: Color(0xFF2C3E50)),
-          onPressed: () => Get.back(),
+        leading: Container(
+           margin: const EdgeInsets.all(8),
+             decoration: BoxDecoration(
+                color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios_rounded, color: theme.iconTheme.color, size: 20),
+            onPressed: () => Get.back(),
+          ),
         ),
         title: Text(
           "Saved Properties",
-          style: GoogleFonts.poppins(color: const Color(0xFF2C3E50), fontWeight: FontWeight.bold),
+          style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold),
         ),
         centerTitle: true,
       ),
       body: Stack(
         children: [
-           // 1. Background
+           // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Light Cyan
-                  Color(0xFFE8EAF6), // Light Indigo
-                  Color(0xFFF3E5F5), // Light Purple
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
               ),
             ),
           ),
@@ -51,9 +59,9 @@ class SavedPropertiesView extends GetView<SavedPropertiesController> {
                    child: Column(
                      mainAxisAlignment: MainAxisAlignment.center,
                      children: [
-                       Icon(Icons.favorite_border_rounded, size: 60, color: Colors.grey[400]),
+                       Icon(Icons.favorite_border_rounded, size: 60, color: isDark ? Colors.grey[600] : Colors.grey[400]),
                        const SizedBox(height: 16),
-                       Text("No saved properties yet", style: GoogleFonts.poppins(color: Colors.grey[600], fontSize: 16)),
+                       Text("No saved properties yet", style: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey[600], fontSize: 16)),
                      ],
                    ),
                  );

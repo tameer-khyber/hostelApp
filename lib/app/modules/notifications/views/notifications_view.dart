@@ -9,11 +9,14 @@ class NotificationsView extends GetView<NotificationsController> {
   const NotificationsView({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Notifications', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
-        backgroundColor: Colors.transparent, // Glass effect provided by container below if needed, or just standard
+        title: Text('Notifications', style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
         leading: Tooltip(
@@ -21,11 +24,11 @@ class NotificationsView extends GetView<NotificationsController> {
             child: Container(
               margin: const EdgeInsets.all(8),
                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
+                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: Icon(Icons.arrow_back, color: theme.iconTheme.color),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -33,17 +36,15 @@ class NotificationsView extends GetView<NotificationsController> {
       ),
       body: Stack(
         children: [
-           // 1. Background
+           // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Light Cyan
-                  Color(0xFFE8EAF6), // Light Indigo
-                  Color(0xFFF3E5F5), // Light Purple
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
               ),
             ),
           ),
@@ -59,7 +60,7 @@ class NotificationsView extends GetView<NotificationsController> {
                   child: GlassContainer(
                     borderRadius: BorderRadius.circular(20),
                     blur: 15,
-                    opacity: 0.6,
+                    opacity: isDark ? 0.3 : 0.6,
                     padding: const EdgeInsets.all(16),
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -83,17 +84,17 @@ class NotificationsView extends GetView<NotificationsController> {
                             children: [
                               Text(
                                 notif['title']!,
-                                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                                style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                               ),
                               const SizedBox(height: 4),
                               Text(
                                 notif['body']!,
-                                style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[700]),
+                                style: GoogleFonts.poppins(fontSize: 13, color: isDark ? Colors.grey[400] : Colors.grey[700]),
                               ),
                               const SizedBox(height: 8),
                               Text(
                                 notif['time']!,
-                                style: GoogleFonts.poppins(fontSize: 11, color: Colors.grey[500], fontStyle: FontStyle.italic),
+                                style: GoogleFonts.poppins(fontSize: 11, color: isDark ? Colors.grey[500] : Colors.grey[500], fontStyle: FontStyle.italic),
                               ),
                             ],
                           ),

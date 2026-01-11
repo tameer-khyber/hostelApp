@@ -11,30 +11,30 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF2C3E50)),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color),
           onPressed: () => Get.back(),
         ),
       ),
       body: Stack(
         children: [
-          // 1. Background (Shared Light Theme)
+          // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Very light cyan
-                  Color(0xFFE1F5FE), // Light Blue
-                  Color(0xFFB3E5FC), // Light Blue 100
-                  Color(0xFF81D4FA), // Light Blue 200
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE1F5FE), const Color(0xFFB3E5FC), const Color(0xFF81D4FA)],
               ),
             ),
           ),
@@ -50,7 +50,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(0.4),
+                    Colors.white.withOpacity(isDark ? 0.1 : 0.4),
                     Colors.white.withOpacity(0.0),
                   ],
                 ),
@@ -66,7 +66,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Icon(Icons.lock_reset_rounded, size: 80, color: Colors.teal.shade700)
+                  Icon(Icons.lock_reset_rounded, size: 80, color: isDark ? Colors.tealAccent : Colors.teal.shade700)
                       .animate().scale(duration: const Duration(milliseconds: 500)),
                   
                   const SizedBox(height: 24),
@@ -76,7 +76,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                     style: GoogleFonts.poppins(
                       fontSize: 26,
                       fontWeight: FontWeight.bold,
-                      color: const Color(0xFF2C3E50),
+                      color: theme.textTheme.bodyLarge?.color,
                     ),
                   ).animate().fadeIn().slideY(begin: 0.2),
                   
@@ -89,7 +89,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                       textAlign: TextAlign.center,
                       style: GoogleFonts.poppins(
                         fontSize: 14,
-                        color: Colors.grey.shade600,
+                        color: isDark ? Colors.grey[400] : Colors.grey.shade600,
                         height: 1.5,
                       ),
                                        ).animate().fadeIn(delay: const Duration(milliseconds: 200)),
@@ -101,11 +101,12 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                   GlassContainer(
                     borderRadius: BorderRadius.circular(24),
                     blur: 15,
-                    opacity: 0.4,
+                    opacity: isDark ? 0.3 : 0.4,
                     padding: const EdgeInsets.all(24),
                     child: Column(
                       children: [
                         _buildTextField(
+                          context,
                           controller: controller.emailController,
                           label: "Email Address",
                           icon: Icons.email_outlined,
@@ -119,7 +120,7 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
                           child: Obx(() => ElevatedButton(
                             onPressed: controller.isLoading.value ? null : controller.sendResetLink,
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.teal.shade600,
+                              backgroundColor: isDark ? Colors.tealAccent.shade700 : Colors.teal.shade600,
                               foregroundColor: Colors.white,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(15),
@@ -150,14 +151,16 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
     );
   }
 
-  Widget _buildTextField({
+  Widget _buildTextField(
+    BuildContext context, {
     required TextEditingController controller,
     required String label,
     required IconData icon,
   }) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.5),
+        color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(15),
         boxShadow: [
           BoxShadow(
@@ -169,11 +172,11 @@ class ForgotPasswordView extends GetView<ForgotPasswordController> {
       ),
       child: TextField(
         controller: controller,
-        style: GoogleFonts.poppins(fontSize: 14),
+        style: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.white : Colors.black),
         decoration: InputDecoration(
-          prefixIcon: Icon(icon, color: Colors.teal.shade400),
+          prefixIcon: Icon(icon, color: isDark ? Colors.tealAccent : Colors.teal.shade400),
           labelText: label,
-          labelStyle: GoogleFonts.poppins(color: Colors.grey.shade600),
+          labelStyle: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey.shade600),
           border: InputBorder.none,
           contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
         ),

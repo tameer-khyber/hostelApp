@@ -11,19 +11,22 @@ class BookingView extends GetView<BookingController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text("Confirm Booking", style: GoogleFonts.poppins(color: const Color(0xFF2C3E50), fontWeight: FontWeight.bold)),
+        title: Text("Confirm Booking", style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
         leading: Padding(
             padding: const EdgeInsets.all(8.0),
             child: CircleAvatar(
-              backgroundColor: Colors.white.withOpacity(0.5),
+              backgroundColor: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF2C3E50), size: 18),
+                icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color, size: 18),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -31,13 +34,15 @@ class BookingView extends GetView<BookingController> {
       ),
       body: Stack(
         children: [
-          // Background
+          // Background (Theme Aware)
            Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
-                colors: [Color(0xFFE0F7FA), Color(0xFFE8EAF6)],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6)],
               ),
             ),
           ),
@@ -51,7 +56,7 @@ class BookingView extends GetView<BookingController> {
                   // Property Summary
                   GlassContainer(
                     borderRadius: BorderRadius.circular(20),
-                    opacity: 0.6,
+                    opacity: isDark ? 0.3 : 0.6,
                     child: Padding(
                       padding: const EdgeInsets.all(16),
                       child: Row(
@@ -62,16 +67,21 @@ class BookingView extends GetView<BookingController> {
                             decoration: BoxDecoration(
                               color: Colors.grey[300],
                               borderRadius: BorderRadius.circular(12),
+                              image: controller.property.imageUrl.isNotEmpty
+                                ? DecorationImage(image: NetworkImage(controller.property.imageUrl), fit: BoxFit.cover)
+                                : null
                             ),
-                            child: const Icon(Icons.image, color: Colors.grey),
+                            child: controller.property.imageUrl.isEmpty 
+                                ? const Icon(Icons.image, color: Colors.grey)
+                                : null,
                           ),
                           const SizedBox(width: 16),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(controller.property.name, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50))),
-                                Text(controller.property.location, style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600])),
+                                Text(controller.property.name, style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
+                                Text(controller.property.location, style: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.grey[400] : Colors.grey[600])),
                                 const SizedBox(height: 8),
                                 Text(controller.property.price, style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.teal)),
                               ],
@@ -85,7 +95,7 @@ class BookingView extends GetView<BookingController> {
                   const SizedBox(height: 24),
 
                   // Date Selection
-                  Text("Select Dates", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50))),
+                  Text("Select Dates", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                   const SizedBox(height: 12),
                   InkWell(
                     onTap: () async {
@@ -95,7 +105,10 @@ class BookingView extends GetView<BookingController> {
                         lastDate: DateTime.now().add(const Duration(days: 365)),
                         builder: (context, child) {
                           return Theme(
-                            data: ThemeData.light().copyWith(
+                            data: isDark ? ThemeData.dark().copyWith(
+                                primaryColor: Colors.teal,
+                                colorScheme: const ColorScheme.dark(primary: Colors.teal, onPrimary: Colors.white, surface: Color(0xFF2C3E50)),
+                            ) : ThemeData.light().copyWith(
                               primaryColor: Colors.teal,
                               colorScheme: const ColorScheme.light(primary: Colors.teal),
                             ),
@@ -109,7 +122,7 @@ class BookingView extends GetView<BookingController> {
                     },
                     child: GlassContainer(
                       borderRadius: BorderRadius.circular(16),
-                      opacity: 0.5,
+                      opacity: isDark ? 0.3 : 0.5,
                       padding: const EdgeInsets.all(16),
                       child: Row(
                         children: [
@@ -118,14 +131,14 @@ class BookingView extends GetView<BookingController> {
                           Obx(() {
                              final range = controller.selectedDateRange.value;
                              if (range == null) {
-                               return Text("Choose Check-in - Check-out", style: GoogleFonts.poppins(color: Colors.grey[600]));
+                               return Text("Choose Check-in - Check-out", style: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey[600]));
                              }
                              final start = DateFormat('MMM dd').format(range.start);
                              final end = DateFormat('MMM dd').format(range.end);
-                             return Text("$start - $end (${range.duration.inDays} nights)", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: const Color(0xFF2C3E50)));
+                             return Text("$start - $end (${range.duration.inDays} nights)", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: theme.textTheme.bodyLarge?.color));
                           }),
                           const Spacer(),
-                          const Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey),
+                          Icon(Icons.arrow_forward_ios_rounded, size: 16, color: isDark ? Colors.grey[400] : Colors.grey),
                         ],
                       ),
                     ),
@@ -134,22 +147,22 @@ class BookingView extends GetView<BookingController> {
                   const SizedBox(height: 24),
 
                   // Payment Details
-                  Text("Payment Details", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50))),
+                  Text("Payment Details", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                   const SizedBox(height: 12),
                   GlassContainer(
                     borderRadius: BorderRadius.circular(20),
-                    opacity: 0.5,
+                    opacity: isDark ? 0.3 : 0.5,
                     padding: const EdgeInsets.all(20),
                     child: Obx(() => Column(
                       children: [
-                        _buildRow("Rent Amount", "\$${controller.totalRent.value}"),
+                        _buildRow(context, "Rent Amount", "\$${controller.totalRent.value}"),
                         const SizedBox(height: 8),
-                        _buildRow("Service Fee (5%)", "\$${controller.serviceFee.value}"),
-                        const Divider(height: 24),
+                        _buildRow(context, "Service Fee (5%)", "\$${controller.serviceFee.value}"),
+                        Divider(height: 24, color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text("Total", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50))),
+                            Text("Total", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color)),
                             Text("\$${controller.grandTotal.value}", style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.teal)),
                           ],
                         ),
@@ -162,12 +175,12 @@ class BookingView extends GetView<BookingController> {
                   // Advance Payment
                   GlassContainer(
                     borderRadius: BorderRadius.circular(16),
-                    opacity: 0.5,
+                    opacity: isDark ? 0.3 : 0.5,
                     padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                     child: Obx(() => SwitchListTile(
                       contentPadding: EdgeInsets.zero,
                       activeColor: Colors.teal,
-                      title: Text("Pay Advance Only (50%)", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: const Color(0xFF2C3E50))),
+                      title: Text("Pay Advance Only (50%)", style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: theme.textTheme.bodyLarge?.color)),
                       value: controller.isAdvancePayment.value,
                       onChanged: (val) => controller.toggleAdvancePayment(val),
                     )),
@@ -185,7 +198,7 @@ class BookingView extends GetView<BookingController> {
             child: GlassContainer(
                borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
                blur: 20,
-               opacity: 0.9,
+               opacity: isDark ? 0.95 : 0.9,
                padding: const EdgeInsets.all(24),
                child: SizedBox(
                  width: double.infinity,
@@ -207,12 +220,13 @@ class BookingView extends GetView<BookingController> {
     );
   }
 
-  Widget _buildRow(String label, String value) {
+  Widget _buildRow(BuildContext context, String label, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        Text(label, style: GoogleFonts.poppins(color: Colors.grey[700])),
-        Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: const Color(0xFF2C3E50))),
+        Text(label, style: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey[700])),
+        Text(value, style: GoogleFonts.poppins(fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyLarge?.color)),
       ],
     );
   }

@@ -11,43 +11,58 @@ class ProfileView extends GetView<ProfileController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
         title: Text(
           'Profile',
           style: GoogleFonts.poppins(
-            color: const Color(0xFF2C3E50),
+            color: theme.textTheme.bodyLarge?.color,
             fontWeight: FontWeight.bold,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.transparent,
         elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF2C3E50)),
-          onPressed: () => Get.back(),
+        leading: Container(
+          margin: const EdgeInsets.all(8),
+             decoration: BoxDecoration(
+                color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+          child: IconButton(
+            icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color, size: 20),
+            onPressed: () => Get.back(),
+          ),
         ),
         actions: [
-          IconButton(
-            icon: const Icon(Icons.edit_rounded, color: Color(0xFF2C3E50)),
-            onPressed: controller.editProfile,
+          Container(
+             margin: const EdgeInsets.all(8),
+             decoration: BoxDecoration(
+                color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
+                shape: BoxShape.circle,
+              ),
+            child: IconButton(
+              icon: Icon(Icons.edit_rounded, color: theme.iconTheme.color, size: 20),
+              onPressed: controller.editProfile,
+            ),
           ),
         ],
       ),
       body: Stack(
         children: [
-          // 1. Background
+          // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), 
-                  Color(0xFFE1F5FE), 
-                  Color(0xFFB3E5FC), 
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE1F5FE), const Color(0xFFB3E5FC)],
               ),
             ),
           ),
@@ -63,8 +78,8 @@ class ProfileView extends GetView<ProfileController> {
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
                   colors: [
-                    Colors.white.withOpacity(0.4),
-                    Colors.white.withOpacity(0.0),
+                    isDark ? Colors.tealAccent.withOpacity(0.1) : Colors.white.withOpacity(0.4),
+                    Colors.transparent,
                   ],
                 ),
               ),
@@ -85,7 +100,7 @@ class ProfileView extends GetView<ProfileController> {
                         padding: const EdgeInsets.all(4),
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: Colors.white.withOpacity(0.5),
+                          color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withOpacity(0.1),
@@ -125,7 +140,7 @@ class ProfileView extends GetView<ProfileController> {
                   style: GoogleFonts.poppins(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
-                    color: const Color(0xFF2C3E50),
+                    color: theme.textTheme.bodyLarge?.color,
                   ),
                 )).animate().fadeIn().slideY(begin: 0.2),
                 
@@ -133,7 +148,7 @@ class ProfileView extends GetView<ProfileController> {
                   controller.email.value,
                   style: GoogleFonts.poppins(
                     fontSize: 14,
-                    color: Colors.grey.shade600,
+                    color: theme.textTheme.bodyMedium?.color,
                   ),
                 )).animate().fadeIn(delay: const Duration(milliseconds: 100)).slideY(begin: 0.2),
 
@@ -143,13 +158,13 @@ class ProfileView extends GetView<ProfileController> {
                 GlassContainer(
                    borderRadius: BorderRadius.circular(24),
                    blur: 15,
-                   opacity: 0.6,
+                   opacity: isDark ? 0.3 : 0.6,
                    padding: const EdgeInsets.all(0), // Padding inside cards
                    child: Column(
                      children: [
-                       _buildProfileItem(Icons.phone_rounded, "Phone", controller.phone.value),
-                       const Divider(height: 1),
-                       _buildProfileItem(Icons.email_rounded, "Email", controller.email.value),
+                       _buildProfileItem(context, Icons.phone_rounded, "Phone", controller.phone.value),
+                       Divider(height: 1, color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
+                       _buildProfileItem(context, Icons.email_rounded, "Email", controller.email.value),
                      ],
                    ),
                 ).animate().fadeIn(delay: const Duration(milliseconds: 200)).slideY(begin: 0.1),
@@ -160,13 +175,13 @@ class ProfileView extends GetView<ProfileController> {
                 GlassContainer(
                    borderRadius: BorderRadius.circular(24),
                    blur: 15,
-                   opacity: 0.6,
+                   opacity: isDark ? 0.3 : 0.6,
                    padding: const EdgeInsets.all(0),
                    child: Column(
                      children: [
-                       _buildActionItem(Icons.lock_outline_rounded, "Change Password", controller.changePassword, Colors.teal.shade700),
-                       const Divider(height: 1),
-                       _buildActionItem(Icons.logout_rounded, "Logout", controller.logout, Colors.red),
+                       _buildActionItem(context, Icons.lock_outline_rounded, "Change Password", controller.changePassword, Colors.teal.shade700),
+                       Divider(height: 1, color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
+                       _buildActionItem(context, Icons.logout_rounded, "Logout", controller.logout, Colors.red),
                      ],
                    ),
                 ).animate().fadeIn(delay: const Duration(milliseconds: 300)).slideY(begin: 0.1),
@@ -178,7 +193,8 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildProfileItem(IconData icon, String title, String value) {
+  Widget _buildProfileItem(BuildContext context, IconData icon, String title, String value) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
       child: Row(
@@ -200,7 +216,7 @@ class ProfileView extends GetView<ProfileController> {
                   title,
                   style: GoogleFonts.poppins(
                     fontSize: 12,
-                    color: Colors.grey.shade600,
+                    color: Theme.of(context).textTheme.bodyMedium?.color,
                   ),
                 ),
                 Text(
@@ -208,7 +224,7 @@ class ProfileView extends GetView<ProfileController> {
                   style: GoogleFonts.poppins(
                     fontSize: 15,
                     fontWeight: FontWeight.w600,
-                    color: const Color(0xFF2C3E50),
+                    color: Theme.of(context).textTheme.bodyLarge?.color,
                   ),
                 ),
               ],
@@ -219,7 +235,8 @@ class ProfileView extends GetView<ProfileController> {
     );
   }
 
-  Widget _buildActionItem(IconData icon, String title, VoidCallback onTap, Color iconColor) {
+  Widget _buildActionItem(BuildContext context, IconData icon, String title, VoidCallback onTap, Color iconColor) {
+     final isDark = Theme.of(context).brightness == Brightness.dark;
     return InkWell(
       onTap: onTap,
       child: Padding(
@@ -241,11 +258,11 @@ class ProfileView extends GetView<ProfileController> {
                 style: GoogleFonts.poppins(
                   fontSize: 15,
                   fontWeight: FontWeight.w600,
-                  color: const Color(0xFF2C3E50),
+                  color: Theme.of(context).textTheme.bodyLarge?.color,
                 ),
               ),
             ),
-            Icon(Icons.arrow_forward_ios_rounded, size: 16, color: Colors.grey.shade400),
+            Icon(Icons.arrow_forward_ios_rounded, size: 16, color: isDark ? Colors.grey[400] : Colors.grey.shade400),
           ],
         ),
       ),

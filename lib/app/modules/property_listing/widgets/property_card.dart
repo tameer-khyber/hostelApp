@@ -14,6 +14,9 @@ class PropertyCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return GestureDetector(
       onTap: () {
         Get.toNamed('/property-detail', arguments: property);
@@ -23,7 +26,7 @@ class PropertyCard extends StatelessWidget {
         child: GlassContainer(
         borderRadius: BorderRadius.circular(20),
         blur: 10,
-        opacity: 0.5,
+        opacity: isDark ? 0.3 : 0.5,
         padding: const EdgeInsets.all(12),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -33,10 +36,14 @@ class PropertyCard extends StatelessWidget {
               height: 180,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15),
-                color: Colors.grey.withOpacity(0.2), // Placeholder color
+                color: Colors.grey.withOpacity(0.2), 
+                image: property.imageUrl.isNotEmpty 
+                  ? DecorationImage(image: NetworkImage(property.imageUrl), fit: BoxFit.cover) 
+                  : null,
               ),
               child: Stack(
                 children: [
+                   if (property.imageUrl.isEmpty)
                    Center(
                     child: Icon(Icons.image_not_supported_rounded, size: 50, color: Colors.grey[400]),
                   ),
@@ -119,7 +126,7 @@ class PropertyCard extends StatelessWidget {
                     children: [
                       Text(
                         property.name,
-                        style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                        style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -131,7 +138,7 @@ class PropertyCard extends StatelessWidget {
                           Expanded(
                             child: Text(
                               property.location,
-                              style: GoogleFonts.poppins(fontSize: 13, color: Colors.grey[600]),
+                              style: GoogleFonts.poppins(fontSize: 13, color: theme.textTheme.bodyMedium?.color ?? Colors.grey[600]),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
                             ),
@@ -154,6 +161,8 @@ class PropertyCard extends StatelessWidget {
     ));
   }
   void _showQrDialog(BuildContext context, PropertyModel property) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
     Get.dialog(
       Dialog(
         backgroundColor: Colors.transparent,
@@ -162,17 +171,18 @@ class PropertyCard extends StatelessWidget {
           blur: 15,
           opacity: 0.9,
           padding: const EdgeInsets.all(24),
+          border: Border.all(color: Colors.white.withOpacity(0.5), width: 1.5),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 "Property QR Code",
-                style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+                style: GoogleFonts.poppins(fontSize: 18, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
               ),
               const SizedBox(height: 8),
               Text(
                 property.name,
-                style: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[600]),
+                style: GoogleFonts.poppins(fontSize: 14, color: theme.textTheme.bodyMedium?.color),
               ),
               const SizedBox(height: 20),
               Container(
@@ -198,7 +208,8 @@ class PropertyCard extends StatelessWidget {
               ElevatedButton(
                 onPressed: () => Get.back(),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF2C3E50),
+                  backgroundColor: isDark ? Colors.teal : const Color(0xFF2C3E50),
+                  foregroundColor: Colors.white,
                   shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                 ),
                 child: const Text("Close"),

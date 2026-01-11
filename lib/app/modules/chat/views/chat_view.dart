@@ -9,11 +9,14 @@ class ChatView extends GetView<ChatController> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       appBar: AppBar(
         titleSpacing: 0,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new_rounded, color: Color(0xFF2C3E50)),
+          icon: Icon(Icons.arrow_back_ios_new_rounded, color: theme.iconTheme.color),
           onPressed: () => Get.back(),
         ),
         title: Row(
@@ -34,7 +37,7 @@ class ChatView extends GetView<ChatController> {
                       decoration: BoxDecoration(
                         color: Colors.green,
                         shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
+                        border: Border.all(color: isDark ? const Color(0xFF1E2746) : Colors.white, width: 2),
                       ),
                     ),
                   )
@@ -44,7 +47,7 @@ class ChatView extends GetView<ChatController> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(controller.ownerName, style: GoogleFonts.poppins(color: const Color(0xFF2C3E50), fontWeight: FontWeight.bold, fontSize: 16)),
+                Text(controller.ownerName, style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold, fontSize: 16)),
                 Text(
                   controller.isOnline ? "Online" : "Offline", 
                   style: GoogleFonts.poppins(color: controller.isOnline ? Colors.green : Colors.grey, fontSize: 12)
@@ -53,66 +56,70 @@ class ChatView extends GetView<ChatController> {
             ),
           ],
         ),
-        backgroundColor: Colors.white,
+        backgroundColor: isDark ? const Color(0xFF1E2746) : Colors.white,
         elevation: 1,
       ),
       body: Column(
         children: [
           Expanded(
-            child: Obx(() => ListView.builder(
-              controller: controller.scrollController,
-              padding: const EdgeInsets.all(16),
-              itemCount: controller.messages.length,
-              itemBuilder: (context, index) {
-                final msg = controller.messages[index];
-                final isMe = msg['isMe'] as bool;
-                return Align(
-                  alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4),
-                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                    decoration: BoxDecoration(
-                      color: isMe ? Colors.teal : Colors.grey[200],
-                      borderRadius: BorderRadius.only(
-                        topLeft: const Radius.circular(16),
-                        topRight: const Radius.circular(16),
-                        bottomLeft: isMe ? const Radius.circular(16) : Radius.zero,
-                        bottomRight: isMe ? Radius.zero : const Radius.circular(16),
-                      ),
-                    ),
-                    constraints: BoxConstraints(maxWidth: Get.width * 0.75),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          msg['text'],
-                          style: GoogleFonts.poppins(color: isMe ? Colors.white : const Color(0xFF2C3E50)),
+            child: Container(
+              color: isDark ? const Color(0xFF1A1A2E) : Colors.grey[50], // Background color
+              child: Obx(() => ListView.builder(
+                controller: controller.scrollController,
+                padding: const EdgeInsets.all(16),
+                itemCount: controller.messages.length,
+                itemBuilder: (context, index) {
+                  final msg = controller.messages[index];
+                  final isMe = msg['isMe'] as bool;
+                  return Align(
+                    alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
+                    child: Container(
+                      margin: const EdgeInsets.symmetric(vertical: 4),
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                      decoration: BoxDecoration(
+                        color: isMe ? Colors.teal : (isDark ? const Color(0xFF2C3E50) : Colors.grey[200]),
+                        borderRadius: BorderRadius.only(
+                          topLeft: const Radius.circular(16),
+                          topRight: const Radius.circular(16),
+                          bottomLeft: isMe ? const Radius.circular(16) : Radius.zero,
+                          bottomRight: isMe ? Radius.zero : const Radius.circular(16),
                         ),
-                        const SizedBox(height: 4),
-                        Text(
-                          msg['time'],
-                          style: GoogleFonts.poppins(color: isMe ? Colors.white70 : Colors.grey[600], fontSize: 10),
-                        )
-                      ],
-                    ),
-                  ).animate().fadeIn().slideY(begin: 0.1),
-                );
-              },
-            )),
+                      ),
+                      constraints: BoxConstraints(maxWidth: Get.width * 0.75),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            msg['text'],
+                            style: GoogleFonts.poppins(color: isMe ? Colors.white : (isDark ? Colors.white : const Color(0xFF2C3E50))),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(
+                            msg['time'],
+                            style: GoogleFonts.poppins(color: isMe ? Colors.white70 : Colors.grey[400], fontSize: 10),
+                          )
+                        ],
+                      ),
+                    ).animate().fadeIn().slideY(begin: 0.1),
+                  );
+                },
+              )),
+            ),
           ),
           Container(
             padding: const EdgeInsets.all(16),
-            color: Colors.white,
+            color: isDark ? const Color(0xFF1E2746) : Colors.white,
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: controller.messageController,
+                    style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color),
                     decoration: InputDecoration(
                       hintText: "Type a message...",
-                      hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
+                      hintStyle: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey[400]),
                       filled: true,
-                      fillColor: Colors.grey[100],
+                      fillColor: isDark ? const Color(0xFF2C3E50) : Colors.grey[100],
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(24),
                         borderSide: BorderSide.none,

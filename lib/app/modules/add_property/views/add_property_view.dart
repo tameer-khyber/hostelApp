@@ -10,10 +10,13 @@ class AddPropertyView extends GetView<AddPropertyController> {
   
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Add New Property', style: GoogleFonts.poppins(color: Colors.black, fontWeight: FontWeight.bold)),
+        title: Text('Add New Property', style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -22,11 +25,11 @@ class AddPropertyView extends GetView<AddPropertyController> {
             child: Container(
               margin: const EdgeInsets.all(8),
                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.5),
+                  color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
                   shape: BoxShape.circle,
                 ),
               child: IconButton(
-                icon: const Icon(Icons.arrow_back, color: Colors.black),
+                icon: Icon(Icons.arrow_back, color: theme.iconTheme.color),
                 onPressed: () => Get.back(),
               ),
             ),
@@ -34,17 +37,15 @@ class AddPropertyView extends GetView<AddPropertyController> {
       ),
       body: Stack(
         children: [
-           // 1. Background
+           // 1. Background (Theme Aware)
           Container(
-            decoration: const BoxDecoration(
+            decoration: BoxDecoration(
               gradient: LinearGradient(
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
-                colors: [
-                  Color(0xFFE0F7FA), // Light Cyan
-                  Color(0xFFE8EAF6), // Light Indigo
-                  Color(0xFFF3E5F5), // Light Purple
-                ],
+                colors: isDark
+                    ? [const Color(0xFF1A1A2E), const Color(0xFF16213E), const Color(0xFF0F3460)]
+                    : [const Color(0xFFE0F7FA), const Color(0xFFE8EAF6), const Color(0xFFF3E5F5)],
               ),
             ),
           ),
@@ -63,7 +64,7 @@ class AddPropertyView extends GetView<AddPropertyController> {
                         width: double.infinity,
                         height: 200,
                         decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.5),
+                          color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.5),
                           borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: Colors.teal.withOpacity(0.3), width: 2),
                           image: controller.selectedImage.value.isNotEmpty
@@ -89,13 +90,13 @@ class AddPropertyView extends GetView<AddPropertyController> {
                   
                   const SizedBox(height: 24),
                   
-                  _buildLabel("Property Name"),
-                  _buildTextField(controller.nameController, "e.g. Sunny Side Hostel", Icons.home_work_rounded),
+                  _buildLabel(context, "Property Name"),
+                  _buildTextField(context, controller.nameController, "e.g. Sunny Side Hostel", Icons.home_work_rounded),
                   
                   const SizedBox(height: 16),
                   
-                  _buildLabel("Location"),
-                  _buildTextField(controller.locationController, "e.g. Downtown, City Center", Icons.location_on_rounded),
+                  _buildLabel(context, "Location"),
+                  _buildTextField(context, controller.locationController, "e.g. Downtown, City Center", Icons.location_on_rounded),
                   
                   const SizedBox(height: 16),
                   
@@ -105,8 +106,8 @@ class AddPropertyView extends GetView<AddPropertyController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                             _buildLabel("Price (per month)"),
-                            _buildTextField(controller.priceController, "e.g. 150", Icons.attach_money_rounded, isNumber: true),
+                             _buildLabel(context, "Price (per month)"),
+                            _buildTextField(context, controller.priceController, "e.g. 150", Icons.attach_money_rounded, isNumber: true),
                           ],
                         ),
                       ),
@@ -115,19 +116,21 @@ class AddPropertyView extends GetView<AddPropertyController> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                             _buildLabel("Property Type"),
+                             _buildLabel(context, "Property Type"),
                              Container(
                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                                decoration: BoxDecoration(
-                                 color: Colors.white.withOpacity(0.6),
+                                 color: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.6),
                                  borderRadius: BorderRadius.circular(15),
-                                 border: Border.all(color: Colors.white, width: 1.5),
+                                 border: Border.all(color: isDark ? Colors.white.withOpacity(0.1) : Colors.white, width: 1.5),
                                ),
                                child: Obx(() => DropdownButtonHideUnderline(
                                  child: DropdownButton<String>(
                                    value: controller.selectedType.value,
                                    isExpanded: true,
+                                   dropdownColor: isDark ? const Color(0xFF2C3E50) : Colors.white,
                                    icon: const Icon(Icons.arrow_drop_down_rounded, color: Colors.teal),
+                                   style: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.white : Colors.black),
                                    items: controller.propertyTypes.map((String value) {
                                      return DropdownMenuItem<String>(
                                        value: value,
@@ -148,8 +151,8 @@ class AddPropertyView extends GetView<AddPropertyController> {
 
                   const SizedBox(height: 16),
                   
-                  _buildLabel("Description"),
-                  _buildTextField(controller.descriptionController, "Tell us about your property...", Icons.description_rounded, maxLines: 4),
+                  _buildLabel(context, "Description"),
+                  _buildTextField(context, controller.descriptionController, "Tell us about your property...", Icons.description_rounded, maxLines: 4),
                   
                   const SizedBox(height: 32),
                   
@@ -159,14 +162,15 @@ class AddPropertyView extends GetView<AddPropertyController> {
                     child: ElevatedButton(
                       onPressed: controller.submitProperty,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF2C3E50),
+                        backgroundColor: isDark ? Colors.tealAccent.shade700 : const Color(0xFF2C3E50),
+                        foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
                         elevation: 5,
-                        shadowColor: const Color(0xFF2C3E50).withOpacity(0.5),
+                        shadowColor: (isDark ? Colors.tealAccent : const Color(0xFF2C3E50)).withOpacity(0.5),
                       ),
                       child: Text(
                         "Submit Property",
-                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.white),
+                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
                       ),
                     ),
                   ).animate().slideY(begin: 1, delay: 200.ms),
@@ -181,31 +185,32 @@ class AddPropertyView extends GetView<AddPropertyController> {
     );
   }
 
-  Widget _buildLabel(String label) {
+  Widget _buildLabel(BuildContext context, String label) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 8, left: 4),
       child: Text(
         label,
-        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: const Color(0xFF34495E)),
+        style: GoogleFonts.poppins(fontSize: 14, fontWeight: FontWeight.w600, color: Theme.of(context).textTheme.bodyMedium?.color),
       ),
     );
   }
 
-  Widget _buildTextField(TextEditingController controller, String hint, IconData icon, {bool isNumber = false, int maxLines = 1}) {
+  Widget _buildTextField(BuildContext context, TextEditingController controller, String hint, IconData icon, {bool isNumber = false, int maxLines = 1}) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GlassContainer(
       borderRadius: BorderRadius.circular(15),
       blur: 10,
-      opacity: 0.6,
+      opacity: isDark ? 0.3 : 0.6,
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       child: TextField(
         controller: controller,
         keyboardType: isNumber ? TextInputType.number : TextInputType.text,
         maxLines: maxLines,
-        style: GoogleFonts.poppins(fontSize: 14),
+        style: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.white : Colors.black),
         decoration: InputDecoration(
           border: InputBorder.none,
           hintText: hint,
-          hintStyle: GoogleFonts.poppins(fontSize: 14, color: Colors.grey[500]),
+          hintStyle: GoogleFonts.poppins(fontSize: 14, color: isDark ? Colors.grey[400] : Colors.grey[500]),
           icon: Icon(icon, color: Colors.teal, size: 20),
         ),
       ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../widgets/add_review_dialog.dart';
 import '../../../global_widgets/glass_container.dart';
 import '../controllers/property_detail_controller.dart';
@@ -170,6 +171,41 @@ class PropertyDetailView extends GetView<PropertyDetailController> {
                              Text(property.location, style: GoogleFonts.poppins(color: Colors.grey[600])),
                            ],
                          ),
+                         
+                         const SizedBox(height: 24),
+                         
+                         // Google Map Section
+                         if (property.latitude != 0.0 && property.longitude != 0.0)
+                          Container(
+                            height: 200,
+                            width: double.infinity,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(color: Colors.grey.withOpacity(0.2)),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: GoogleMap(
+                                initialCameraPosition: CameraPosition(
+                                  target: LatLng(property.latitude, property.longitude),
+                                  zoom: 14,
+                                ),
+                                markers: {
+                                  Marker(
+                                    markerId: const MarkerId('property'),
+                                    position: LatLng(property.latitude, property.longitude),
+                                    infoWindow: InfoWindow(title: property.name),
+                                  ),
+                                },
+                                zoomControlsEnabled: false,
+                                mapToolbarEnabled: false,
+                                liteModeEnabled: true, // Lightweight mode for lists/details
+                              ),
+                            ),
+                          ).animate().fadeIn().slideX(),
+                         
+                         if (property.latitude != 0.0 && property.longitude != 0.0)
+                          const SizedBox(height: 24),
 
                          const SizedBox(height: 24),
                          

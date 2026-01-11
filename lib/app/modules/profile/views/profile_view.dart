@@ -4,6 +4,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 import '../../../global_widgets/glass_container.dart';
+import '../../settings/views/change_password_view.dart';
 import '../controllers/profile_controller.dart';
 
 class ProfileView extends GetView<ProfileController> {
@@ -179,7 +180,7 @@ class ProfileView extends GetView<ProfileController> {
                    padding: const EdgeInsets.all(0),
                    child: Column(
                      children: [
-                       _buildActionItem(context, Icons.lock_outline_rounded, "Change Password", controller.changePassword, Colors.teal.shade700),
+                       _buildActionItem(context, Icons.lock_outline_rounded, "Change Password", () => Get.to(() => const ChangePasswordView()), Colors.teal.shade700),
                        Divider(height: 1, color: isDark ? Colors.white.withOpacity(0.1) : Colors.grey.shade300),
                        _buildActionItem(context, Icons.logout_rounded, "Logout", controller.logout, Colors.red),
                      ],

@@ -3,6 +3,9 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import '../../../global_widgets/glass_container.dart';
+import 'change_password_view.dart';
+import 'help_center_view.dart';
+import 'about_app_view.dart';
 import '../controllers/settings_controller.dart';
 import '../../../routes/app_pages.dart';
 
@@ -60,10 +63,10 @@ class SettingsView extends GetView<SettingsController> {
                      delay: 0,
                    ),
                    const SizedBox(height: 10),
-                   _buildSettingsTile(
+                     _buildSettingsTile(
                      icon: Icons.lock_rounded,
                      title: "Change Password",
-                     onTap: () {},
+                     onTap: () => Get.to(() => const ChangePasswordView()),
                      delay: 100,
                    ),
                    
@@ -94,14 +97,14 @@ class SettingsView extends GetView<SettingsController> {
                    _buildSettingsTile(
                      icon: Icons.help_outline_rounded,
                      title: "Help Center",
-                     onTap: () {},
+                     onTap: () => Get.to(() => const HelpCenterView()),
                      delay: 400,
                    ),
                    const SizedBox(height: 10),
                    _buildSettingsTile(
                      icon: Icons.info_outline_rounded,
                      title: "About App",
-                     onTap: () {},
+                     onTap: () => Get.to(() => const AboutAppView()),
                      delay: 500,
                    ),
                    

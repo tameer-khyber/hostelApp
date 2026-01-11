@@ -25,6 +25,35 @@ class SettingsController extends GetxController {
     notificationsEnabled.value = value;
   }
   
+  final currentPasswordController = TextEditingController();
+  final newPasswordController = TextEditingController();
+  final confirmNewPasswordController = TextEditingController();
+
+  void updatePassword() {
+    if (newPasswordController.text != confirmNewPasswordController.text) {
+      Get.snackbar("Error", "Passwords do not match", backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
+    if (newPasswordController.text.length < 6) {
+      Get.snackbar("Error", "Password must be at least 6 characters", backgroundColor: Colors.red, colorText: Colors.white);
+      return;
+    }
+    // Simulate API call
+    Get.defaultDialog(
+      title: "Processing",
+      content: const CircularProgressIndicator(),
+      barrierDismissible: false,
+    );
+    Future.delayed(const Duration(seconds: 2), () {
+      Get.back(); // Close dialog
+      Get.back(); // Close screen
+      Get.snackbar("Success", "Password updated successfully", backgroundColor: Colors.green, colorText: Colors.white);
+      currentPasswordController.clear();
+      newPasswordController.clear();
+      confirmNewPasswordController.clear();
+    });
+  }
+
   void logout() {
     Get.defaultDialog(
       title: "Logout",
@@ -32,10 +61,19 @@ class SettingsController extends GetxController {
       textConfirm: "Yes",
       textCancel: "Cancel",
       confirmTextColor: Colors.white,
+      buttonColor: Colors.teal,
       onConfirm: () {
         Get.offAllNamed(Routes.LOGIN);
       },
     );
+  }
+
+  @override
+  void onClose() {
+    currentPasswordController.dispose();
+    newPasswordController.dispose();
+    confirmNewPasswordController.dispose();
+    super.onClose();
   }
 
   @override

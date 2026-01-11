@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import '../../../global_widgets/glass_container.dart';
 import '../controllers/add_property_controller.dart';
+import 'location_picker_view.dart';
 
 class AddPropertyView extends GetView<AddPropertyController> {
   const AddPropertyView({Key? key}) : super(key: key);
@@ -96,7 +98,29 @@ class AddPropertyView extends GetView<AddPropertyController> {
                   const SizedBox(height: 16),
                   
                   _buildLabel(context, "Location"),
-                  _buildTextField(context, controller.locationController, "e.g. Downtown, City Center", Icons.location_on_rounded),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: _buildTextField(context, controller.locationController, "e.g. Downtown, City Center", Icons.location_on_rounded),
+                      ),
+                      const SizedBox(width: 8),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.teal.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: IconButton(
+                          icon: Obx(() => Icon(Icons.map_rounded, color: controller.pickedLocation.value != null ? Colors.green : Colors.teal)),
+                          onPressed: () async {
+                             final result = await Get.to(() => const LocationPickerView());
+                             if (result != null && result is LatLng) {
+                               controller.setPickedLocation(result);
+                             }
+                          },
+                        ),
+                      ),
+                    ],
+                  ),
                   
                   const SizedBox(height: 16),
                   
@@ -148,6 +172,45 @@ class AddPropertyView extends GetView<AddPropertyController> {
                       ),
                     ],
                   ),
+
+                  const SizedBox(height: 16),
+                  
+                  _buildLabel(context, "Security Deposit"),
+                  _buildTextField(context, controller.depositController, "e.g. 500", Icons.security_rounded, isNumber: true),
+
+                  const SizedBox(height: 16),
+                  
+                  _buildLabel(context, "Facilities"),
+                  Wrap(
+                    spacing: 8,
+                    runSpacing: 8,
+                    children: controller.availableAmenities.map((amenity) {
+                      return Obx(() {
+                        final isSelected = controller.selectedAmenities.contains(amenity);
+                        return FilterChip(
+                          label: Text(amenity),
+                          selected: isSelected,
+                          onSelected: (_) => controller.toggleAmenity(amenity),
+                          checkmarkColor: Colors.white,
+                          selectedColor: Colors.teal,
+                          backgroundColor: isDark ? Colors.white.withOpacity(0.1) : Colors.white.withOpacity(0.6),
+                          labelStyle: GoogleFonts.poppins(
+                            color: isSelected ? Colors.white : (isDark ? Colors.grey[300] : Colors.black87),
+                            fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
+                          ),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(20),
+                            side: BorderSide(color: isDark ? Colors.white.withOpacity(0.1) : Colors.transparent),
+                          ),
+                        );
+                      });
+                    }).toList(),
+                  ),
+                  
+                  const SizedBox(height: 16),
+                  
+                  _buildLabel(context, "House Rules"),
+                  _buildTextField(context, controller.rulesController, "e.g. No smoking, No pets...", Icons.gavel_rounded, maxLines: 3),
 
                   const SizedBox(height: 16),
                   

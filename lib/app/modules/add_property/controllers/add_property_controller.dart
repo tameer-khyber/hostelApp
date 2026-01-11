@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:get/get.dart';
 import '../../../data/services/property_service.dart';
 import '../../../data/models/property_model.dart';
@@ -10,11 +11,32 @@ class AddPropertyController extends GetxController {
   final nameController = TextEditingController();
   final locationController = TextEditingController();
   final priceController = TextEditingController();
+  final depositController = TextEditingController();
+  final rulesController = TextEditingController();
   final descriptionController = TextEditingController();
 
   final selectedType = 'Hostel'.obs;
   final propertyTypes = ['Hostel', 'Flat', 'Room', 'Hotel'];
   
+  final availableAmenities = ['Wi-Fi', 'AC', 'Parking', 'Food', 'Gym', 'Laundry', 'Security', 'TV'];
+  final selectedAmenities = <String>[].obs;
+  
+  void toggleAmenity(String amenity) {
+    if (selectedAmenities.contains(amenity)) {
+      selectedAmenities.remove(amenity);
+    } else {
+      selectedAmenities.add(amenity);
+    }
+  }
+
+  final Rxn<LatLng> pickedLocation = Rxn<LatLng>();
+
+  void setPickedLocation(LatLng location) {
+    pickedLocation.value = location;
+    Get.snackbar("Location Set", "Property location updated", 
+      backgroundColor: Colors.green, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
+  }
+
   // Mock image handling
   final RxString selectedImage = "".obs;
 
@@ -59,6 +81,12 @@ class AddPropertyController extends GetxController {
       description: descriptionController.text,
       ownerName: "Me (Owner)", // In a real app, get from User Service
       reviews: [],
+      reviews: [],
+      securityDeposit: depositController.text.isNotEmpty ? "\$${depositController.text}" : null,
+      rules: rulesController.text.isNotEmpty ? rulesController.text.split('\n') : [],
+      amenities: selectedAmenities.toList(),
+      latitude: pickedLocation.value?.latitude ?? 0.0,
+      longitude: pickedLocation.value?.longitude ?? 0.0,
     );
 
     _propertyService.addProperty(newProperty);
@@ -78,6 +106,8 @@ class AddPropertyController extends GetxController {
     nameController.dispose();
     locationController.dispose();
     priceController.dispose();
+    depositController.dispose();
+    rulesController.dispose();
     descriptionController.dispose();
     super.onClose();
   }

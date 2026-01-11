@@ -1,4 +1,5 @@
 class PropertyModel {
+  final String id;
   final String name;
   final String location;
   final String price;
@@ -23,6 +24,7 @@ class PropertyModel {
     this.rating,
     this.imageUrl,
     {
+      String? id,
       this.isFavorite = false,
       this.reviews = const [],
       this.description = "No description provided.",
@@ -35,7 +37,7 @@ class PropertyModel {
       this.latitude = 0.0,
       this.longitude = 0.0,
     }
-  );
+  ) : id = id ?? (DateTime.now().millisecondsSinceEpoch.toString() + name.hashCode.toString());
 }
 
 class ReviewModel {

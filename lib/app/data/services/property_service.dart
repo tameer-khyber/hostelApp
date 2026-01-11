@@ -64,6 +64,7 @@ class PropertyService extends GetxService {
       final p = allProperties[index];
       final newProperty = PropertyModel(
         p.name, p.location, p.price, p.rating, p.imageUrl,
+        id: p.id,
         isFavorite: !p.isFavorite,
         description: p.description,
         images: p.images,

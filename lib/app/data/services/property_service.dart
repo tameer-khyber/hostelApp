@@ -86,4 +86,17 @@ class PropertyService extends GetxService {
       }
     }
   }
+  void addProperty(PropertyModel property) {
+    allProperties.insert(0, property); // Add to top of list
+    Get.snackbar(
+      "Success", 
+      "Property '${property.name}' added successfully!",
+      snackPosition: SnackPosition.BOTTOM,
+      backgroundColor: Colors.teal,
+      colorText: Colors.white,
+      margin: const EdgeInsets.all(10),
+      borderRadius: 10,
+      duration: const Duration(seconds: 3),
+    );
+  }
 }

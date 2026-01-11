@@ -8,14 +8,16 @@ class SettingsController extends GetxController {
 
   void toggleTheme(bool value) {
     isDarkMode.value = value;
-    // Get.changeTheme(value ? ThemeData.dark() : ThemeData.light()); // Disabled for now to prevent breaking design during demo
+    Get.changeThemeMode(value ? ThemeMode.dark : ThemeMode.light);
      Get.snackbar(
       "Theme Changed", 
       value ? "Dark Mode Enabled" : "Light Mode Enabled",
       snackPosition: SnackPosition.BOTTOM,
-      backgroundColor: Colors.black87,
-      colorText: Colors.white,
+      backgroundColor: value ? Colors.white : Colors.black87,
+      colorText: value ? Colors.black : Colors.white,
       duration: const Duration(milliseconds: 1000),
+      borderRadius: 10,
+      margin: const EdgeInsets.all(10),
     );
   }
 

@@ -17,9 +17,12 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+
     return Dialog(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-      backgroundColor: Colors.white,
+      backgroundColor: isDark ? const Color(0xFF1E2746) : Colors.white,
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -28,7 +31,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
           children: [
             Text(
               "Write a Review",
-              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: const Color(0xFF2C3E50)),
+              style: GoogleFonts.poppins(fontSize: 20, fontWeight: FontWeight.bold, color: theme.textTheme.bodyLarge?.color),
             ),
             const SizedBox(height: 16),
             
@@ -61,16 +64,16 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
               maxLines: 4,
               decoration: InputDecoration(
                 hintText: "Share your experience...",
-                hintStyle: GoogleFonts.poppins(color: Colors.grey[400]),
+                hintStyle: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey[400]),
                 filled: true,
-                fillColor: Colors.grey[100],
+                fillColor: isDark ? const Color(0xFF121212) : Colors.grey[100],
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(12),
                   borderSide: BorderSide.none,
                 ),
                 contentPadding: const EdgeInsets.all(16),
               ),
-              style: GoogleFonts.poppins(color: const Color(0xFF2C3E50)),
+              style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color),
             ),
             
             const SizedBox(height: 24),
@@ -81,7 +84,7 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
               children: [
                 TextButton(
                   onPressed: () => Get.back(),
-                  child: Text("Cancel", style: GoogleFonts.poppins(color: Colors.grey[600])),
+                  child: Text("Cancel", style: GoogleFonts.poppins(color: isDark ? Colors.grey[400] : Colors.grey[600])),
                 ),
                 const SizedBox(width: 8),
                 ElevatedButton(
@@ -89,6 +92,8 @@ class _AddReviewDialogState extends State<AddReviewDialog> {
                     if (_reviewController.text.isNotEmpty) {
                       widget.onSubmit(_rating, _reviewController.text);
                       Get.back();
+                    } else {
+                       Get.snackbar("Error", "Please write a comment", backgroundColor: Colors.redAccent, colorText: Colors.white, snackPosition: SnackPosition.BOTTOM);
                     }
                   },
                   style: ElevatedButton.styleFrom(

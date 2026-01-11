@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 part of 'app_pages.dart';
 // DO NOT EDIT. This is code generated via package:get_cli/get_cli.dart
 
@@ -25,7 +26,20 @@ abstract class Routes {
   static const ANALYTICS = _Paths.ANALYTICS;
   static const SETTINGS = _Paths.SETTINGS;
   static const NOTIFICATIONS = _Paths.NOTIFICATIONS;
+  static const MANAGE_PROPERTIES = _Paths.MANAGE_PROPERTIES;
+  static const OWNER_BOOKING_REQUESTS = _Paths.OWNER_BOOKING_REQUESTS;
+  static const OWNER_PAYMENTS = _Paths.OWNER_PAYMENTS;
+  static const OWNER_CHAT_LIST = _Paths.OWNER_CHAT_LIST;
+  static const VIDEO_CALL = _Paths.VIDEO_CALL;
+  static const OWNER_REVIEWS = _Paths.OWNER_REVIEWS;
+  static const ADMIN_DASHBOARD = _Paths.ADMIN_DASHBOARD;
+  static const ADMIN_MANAGE_USERS = _Paths.ADMIN_MANAGE_USERS;
+  static const ADMIN_MANAGE_PROPERTIES = _Paths.ADMIN_MANAGE_PROPERTIES;
+  static const BOOKINGS_HISTORY = _Paths.BOOKINGS_HISTORY;
+  static const PAYMENT = _Paths.PAYMENT;
+  static const CHAT = _Paths.CHAT;
 }
+
 
 abstract class _Paths {
   _Paths._();
@@ -54,4 +68,13 @@ abstract class _Paths {
   static const ANALYTICS = '/analytics';
   static const SETTINGS = '/settings';
   static const NOTIFICATIONS = '/notifications';
+  static const MANAGE_PROPERTIES = '/manage-properties';
+  static const OWNER_BOOKING_REQUESTS = '/owner-booking-requests';
+  static const OWNER_PAYMENTS = '/owner-payments';
+  static const OWNER_CHAT_LIST = '/owner-chat-list';
+  static const VIDEO_CALL = '/video-call';
+  static const OWNER_REVIEWS = '/owner-reviews';
+  static const ADMIN_DASHBOARD = '/admin-dashboard';
+  static const ADMIN_MANAGE_USERS = '/admin-manage-users';
+  static const ADMIN_MANAGE_PROPERTIES = '/admin-manage-properties';
 }

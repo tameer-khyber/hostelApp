@@ -27,6 +27,17 @@ class LoginController extends GetxController {
     await Future.delayed(const Duration(seconds: 2)); // Simulate API
     isLoading.value = false;
     
+    // Simulate Admin Login
+    if (emailController.text == 'admin@hostel.com' && passwordController.text == 'admin123') {
+      Get.offAllNamed(Routes.ADMIN_DASHBOARD);
+      Get.snackbar('Success', 'Welcome Admin',
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.indigo,
+        colorText: Colors.white,
+      );
+      return;
+    }
+
     // Determine where to go based on arguments
     final args = Get.arguments;
     final isOwner = args != null && args is Map && args.containsKey('isOwner') 

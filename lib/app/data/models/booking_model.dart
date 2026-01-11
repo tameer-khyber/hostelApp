@@ -7,7 +7,9 @@ class BookingModel {
   final DateTimeRange dateRange;
   final double totalAmount;
   final DateTime bookingDate;
-  final String status; // 'Active', 'Completed', 'Cancelled'
+  final String status; // 'Active', 'Completed', 'Cancelled', 'Pending'
+  final String tenantName;
+  final String? tenantImage;
 
   BookingModel({
     required this.id,
@@ -16,5 +18,7 @@ class BookingModel {
     required this.totalAmount,
     required this.bookingDate,
     this.status = 'Active',
+    this.tenantName = "Unknown User",
+    this.tenantImage,
   });
 }

@@ -18,7 +18,7 @@ class AddPropertyView extends GetView<AddPropertyController> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
-        title: Text('Add New Property', style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold)),
+        title: Obx(() => Text(controller.isEditing.value ? 'Edit Property' : 'Add New Property', style: GoogleFonts.poppins(color: theme.textTheme.bodyLarge?.color, fontWeight: FontWeight.bold))),
         backgroundColor: Colors.transparent,
         elevation: 0,
         centerTitle: true,
@@ -231,10 +231,10 @@ class AddPropertyView extends GetView<AddPropertyController> {
                         elevation: 5,
                         shadowColor: (isDark ? Colors.tealAccent : const Color(0xFF2C3E50)).withOpacity(0.5),
                       ),
-                      child: Text(
-                        "Submit Property",
-                        style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
-                      ),
+                        child: Obx(() => Text(
+                          controller.isEditing.value ? "Update Property" : "Submit Property",
+                          style: GoogleFonts.poppins(fontSize: 16, fontWeight: FontWeight.bold),
+                        )),
                     ),
                   ).animate().slideY(begin: 1, delay: 200.ms),
                   

@@ -1,3 +1,4 @@
+// ignore_for_file: constant_identifier_names
 import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
@@ -50,6 +51,23 @@ import '../modules/settings/bindings/settings_binding.dart';
 import '../modules/settings/views/settings_view.dart';
 import '../modules/notifications/bindings/notifications_binding.dart';
 import '../modules/notifications/views/notifications_view.dart';
+import '../modules/owner_home/views/manage_properties_view.dart';
+import '../modules/owner_booking_requests/bindings/owner_booking_requests_binding.dart';
+import '../modules/owner_booking_requests/views/owner_booking_requests_view.dart';
+import '../modules/owner_payments/bindings/owner_payments_binding.dart';
+import '../modules/owner_payments/views/owner_payments_view.dart';
+import '../modules/owner_chat_list/bindings/owner_chat_list_binding.dart';
+import '../modules/owner_chat_list/views/owner_chat_list_view.dart';
+import '../modules/video_call/bindings/video_call_binding.dart';
+import '../modules/video_call/views/video_call_view.dart';
+import '../modules/owner_reviews/bindings/owner_reviews_binding.dart';
+import '../modules/owner_reviews/views/owner_reviews_view.dart';
+import '../modules/admin_dashboard/bindings/admin_dashboard_binding.dart';
+import '../modules/admin_dashboard/views/admin_dashboard_view.dart';
+import '../modules/admin_manage_users/bindings/admin_manage_users_binding.dart';
+import '../modules/admin_manage_users/views/admin_manage_users_view.dart';
+import '../modules/admin_manage_properties/bindings/admin_manage_properties_binding.dart';
+import '../modules/admin_manage_properties/views/admin_manage_properties_view.dart';
 
 part 'app_routes.dart';
 
@@ -183,6 +201,51 @@ class AppPages {
       name: _Paths.NOTIFICATIONS,
       page: () => const NotificationsView(),
       binding: NotificationsBinding(),
+    ),
+    GetPage(
+      name: _Paths.MANAGE_PROPERTIES,
+      page: () => const ManagePropertiesView(),
+      binding: AddPropertyBinding(), // Reusing binding as it needs similar dependencies or PropertyService
+    ),
+    GetPage(
+      name: _Paths.OWNER_BOOKING_REQUESTS,
+      page: () => const OwnerBookingRequestsView(),
+      binding: OwnerBookingRequestsBinding(),
+    ),
+    GetPage(
+      name: _Paths.OWNER_PAYMENTS,
+      page: () => const OwnerPaymentsView(),
+      binding: OwnerPaymentsBinding(),
+    ),
+    GetPage(
+      name: _Paths.OWNER_CHAT_LIST,
+      page: () => const OwnerChatListView(),
+      binding: OwnerChatListBinding(),
+    ),
+    GetPage(
+      name: _Paths.VIDEO_CALL,
+      page: () => const VideoCallView(),
+      binding: VideoCallBinding(),
+    ),
+    GetPage(
+      name: _Paths.OWNER_REVIEWS,
+      page: () => const OwnerReviewsView(),
+      binding: OwnerReviewsBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_DASHBOARD,
+      page: () => const AdminDashboardView(),
+      binding: AdminDashboardBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_MANAGE_USERS,
+      page: () => const AdminManageUsersView(),
+      binding: AdminManageUsersBinding(),
+    ),
+    GetPage(
+      name: _Paths.ADMIN_MANAGE_PROPERTIES,
+      page: () => const AdminManagePropertiesView(),
+      binding: AdminManagePropertiesBinding(),
     ),
   ];
 }

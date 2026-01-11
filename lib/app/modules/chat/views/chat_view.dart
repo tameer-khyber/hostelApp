@@ -44,6 +44,7 @@ class ChatView extends GetView<ChatController> {
               ],
             ),
             const SizedBox(width: 12),
+          
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -56,6 +57,22 @@ class ChatView extends GetView<ChatController> {
             ),
           ],
         ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.videocam_rounded, color: Colors.teal),
+             onPressed: () {
+              // Navigate to Video Call
+              Get.toNamed(
+                '/video-call', 
+                arguments: {
+                  'name': controller.ownerName,
+                  'image': null // Could be passed if available
+                }
+              );
+            },
+          ),
+          const SizedBox(width: 8),
+        ],
         backgroundColor: isDark ? const Color(0xFF1E2746) : Colors.white,
         elevation: 1,
       ),

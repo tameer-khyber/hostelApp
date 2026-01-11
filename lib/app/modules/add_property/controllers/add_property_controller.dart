@@ -15,6 +15,9 @@ class AddPropertyController extends GetxController {
   final rulesController = TextEditingController();
   final descriptionController = TextEditingController();
 
+  PropertyModel? editingProperty;
+  final isEditing = false.obs;
+
   final selectedType = 'Hostel'.obs;
   final propertyTypes = ['Hostel', 'Flat', 'Room', 'Hotel'];
   
@@ -76,19 +79,26 @@ class AddPropertyController extends GetxController {
       nameController.text,
       locationController.text,
       "\$${priceController.text}/mo", // Formatting price
-      5.0, // Default rating for new property
+      editingProperty?.rating ?? 5.0, // Keep existing rating or default
       selectedImage.value,
+      id: editingProperty?.id, // Keep existing ID if editing
       description: descriptionController.text,
-      ownerName: "Me (Owner)", // In a real app, get from User Service
+      ownerName: "Me (Owner)", 
       // reviews: [], // Removed duplicate
       securityDeposit: depositController.text.isNotEmpty ? "\$${depositController.text}" : null,
       rules: rulesController.text.isNotEmpty ? rulesController.text.split('\n') : [],
       amenities: selectedAmenities.toList(),
       latitude: pickedLocation.value?.latitude ?? 0.0,
       longitude: pickedLocation.value?.longitude ?? 0.0,
+      isVisible: editingProperty?.isVisible ?? true,
+      reviews: editingProperty?.reviews ?? [],
     );
 
-    _propertyService.addProperty(newProperty);
+    if (isEditing.value) {
+      _propertyService.updateProperty(newProperty);
+    } else {
+      _propertyService.addProperty(newProperty);
+    }
     
     // Clear form
     nameController.clear();
@@ -98,6 +108,35 @@ class AddPropertyController extends GetxController {
     selectedImage.value = "";
     
     Get.back();
+  }
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (Get.arguments != null && Get.arguments is PropertyModel) {
+      editingProperty = Get.arguments as PropertyModel;
+      isEditing.value = true;
+      _prefillData();
+    }
+  }
+
+  void _prefillData() {
+    if (editingProperty == null) return;
+    nameController.text = editingProperty!.name;
+    locationController.text = editingProperty!.location;
+    // Remove non-numeric chars for editing if needed, but simple copy is fine for now
+    priceController.text = editingProperty!.price.replaceAll(RegExp(r'[^0-9]'), ''); 
+    descriptionController.text = editingProperty!.description;
+    if (editingProperty!.securityDeposit != null) {
+      depositController.text = editingProperty!.securityDeposit!.replaceAll(RegExp(r'[^0-9]'), '');
+    }
+    rulesController.text = editingProperty!.rules.join('\n');
+    selectedImage.value = editingProperty!.imageUrl;
+    selectedAmenities.assignAll(editingProperty!.amenities);
+    
+    if (editingProperty!.latitude != 0.0) {
+      pickedLocation.value = LatLng(editingProperty!.latitude, editingProperty!.longitude);
+    }
   }
 
   @override

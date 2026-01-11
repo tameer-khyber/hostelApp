@@ -16,7 +16,11 @@ class PropertyModel {
   final double ownerRating;
   final double latitude;
   final double longitude;
+
   final String? securityDeposit;
+  final bool isVisible;
+  final String verificationStatus; // 'Verified', 'Pending', 'Blocked'
+  final String? blockReason;
 
   PropertyModel(
     this.name,
@@ -38,6 +42,9 @@ class PropertyModel {
       this.latitude = 0.0,
       this.longitude = 0.0,
       this.securityDeposit,
+      this.isVisible = true,
+      this.verificationStatus = 'Verified', // Default to Verified for existing mocks
+      this.blockReason,
     }
   ) : id = id ?? (DateTime.now().millisecondsSinceEpoch.toString() + name.hashCode.toString());
 }
@@ -48,6 +55,8 @@ class ReviewModel {
   final double rating;
   final String text;
   final String? profileImage;
+  final String? response;
+  final DateTime? responseDate;
 
   ReviewModel({
     required this.authorName,
@@ -55,5 +64,7 @@ class ReviewModel {
     required this.rating,
     required this.text,
     this.profileImage,
+    this.response,
+    this.responseDate,
   });
 }

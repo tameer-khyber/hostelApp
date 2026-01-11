@@ -139,6 +139,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           icon: Icons.attach_money_rounded,
                           color: Colors.green,
                           delay: 300,
+                          onTap: () => Get.toNamed(Routes.OWNER_PAYMENTS),
                         ),
                       ],
                     ),
@@ -186,6 +187,20 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
                           icon: Icons.bookmark_border_rounded,
                           label: "Saved",
                           onTap: () => Get.toNamed(Routes.SAVED_PROPERTIES),
+                        ),
+                        const SizedBox(width: 24),
+                        _buildActionButton(
+                          context,
+                          icon: Icons.chat_bubble_outline_rounded,
+                          label: "Messages",
+                          onTap: () => Get.toNamed(Routes.OWNER_CHAT_LIST),
+                        ),
+                        const SizedBox(width: 24),
+                        _buildActionButton(
+                          context,
+                          icon: Icons.star_outline_rounded,
+                          label: "Reviews",
+                          onTap: () => Get.toNamed(Routes.OWNER_REVIEWS),
                         ),
                         const SizedBox(width: 24),
                         _buildActionButton(
@@ -319,9 +334,11 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
     );
   }
 
-  Widget _buildStatCard(BuildContext context, {required String title, required String value, required IconData icon, required Color color, int delay = 0}) {
+  Widget _buildStatCard(BuildContext context, {required String title, required String value, required IconData icon, required Color color, int delay = 0, VoidCallback? onTap}) {
     final theme = Theme.of(context);
-    return Padding(
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
       padding: const EdgeInsets.only(right: 16),
       child: GlassContainer(
         borderRadius: BorderRadius.circular(20),
@@ -352,6 +369,7 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
             ),
           ],
         ),
+      ),
       ),
     ).animate().fadeIn(delay: delay.ms).slideX();
   }
@@ -412,9 +430,9 @@ class OwnerHomeView extends GetView<OwnerHomeController> {
         if (label == "Profile") {
            Get.toNamed('/profile'); 
         } else if (label == "Properties") {
-           Get.toNamed('/property-listing'); 
+           Get.toNamed('/manage-properties'); 
         } else if (label == "Bookings") {
-           Get.toNamed('/bookings-history'); 
+           Get.toNamed(Routes.OWNER_BOOKING_REQUESTS); 
         }
       },
       child: Tooltip(

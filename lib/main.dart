@@ -54,7 +54,6 @@ void main() {
           primary: Colors.tealAccent, // Vibrant accent
           secondary: Colors.deepPurpleAccent,
           surface: Color(0xFF1E1E1E),
-          background: Color(0xFF121212),
           onPrimary: Colors.black,
           onSurface: Color(0xFFEDEDED),
         ),

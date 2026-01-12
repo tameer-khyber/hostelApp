@@ -1,78 +1,112 @@
 # Antigravity AI Prompt for HostelApp
 
-> **Copy and paste this entire prompt when starting a new Antigravity session**
+> **Both Moazzam and Tammer use this same prompt**  
+> Last Updated: 2026-01-12
 
 ---
 
-## 🚀 PROMPT FOR TAMMER (or any team member)
+## 🚀 UNIVERSAL PROMPT (Copy and paste when starting)
 
 ```
-I'm working on the HostelApp Flutter project. Before we start:
+I'm working on the HostelApp Flutter project.
 
-1. **READ THE TRACKING FOLDER FIRST:**
-   - Read `.docs/TEAM_OVERVIEW.md` for quick project status
-   - Read `.docs/PROJECT_STATUS.md` for detailed branch info and completed work
-   - Read `.docs/REMAINING_TASKS.md` for what needs to be done
-   - Read `.docs/SUGGESTIONS.md` for architecture and improvement ideas
+## MY IDENTITY
+**My name is:** [WRITE YOUR NAME: Moazzam or Tammer]
 
-2. **UNDERSTAND THE CONTEXT:**
-   - This is a hostel/property management Flutter app
-   - We're using GetX for state management
-   - We have a professional component library in `lib/app/global_widgets/`
-   - We have constants in `lib/app/config/constants/`
-   - We have utilities in `lib/app/core/`
+## FIRST, READ THE TRACKING FOLDER:
+1. Read `.docs/TEAM_OVERVIEW.md` - Quick project status
+2. Read `.docs/PROJECT_STATUS.md` - Branch info, all completed work
+3. Read `.docs/REMAINING_TASKS.md` - What needs to be done
+4. Read `.docs/SUGGESTIONS.md` - Architecture ideas
 
-3. **MY NAME IS:** [Moazzam/Tammer] (replace with your name)
+## PROJECT CONTEXT:
+- Flutter app for hostel/property management
+- State management: GetX
+- Global widgets: `lib/app/global_widgets/`
+- Constants: `lib/app/config/constants/`
+- Utilities: `lib/app/core/`
 
-4. **BRANCH STATUS:**
-   - Check which branch I'm on with `git branch`
-   - The refactoring work is on `feature/code-refactoring`
-   - Main branch should be stable
+## RULES TO FOLLOW:
+1. Use global widgets (PrimaryButton, AppTextField, etc.) - don't recreate them
+2. Use AppStrings for all text
+3. Use AppConstants for spacing/sizing
+4. Use Validators for form validation
+5. Check git branch before making changes
+6. Test build before committing
 
-5. **FOLLOW THESE PATTERNS:**
-   - Use global widgets (PrimaryButton, AppTextField, etc.) instead of custom ones
-   - Use AppStrings for all text
-   - Use AppConstants for spacing/sizing
-   - Use Validators for form validation
-   - Use Helpers for snackbars and formatting
+## WHEN I SAY "done working for today":
+Create/update my daily log file at `.docs/logs/[myname]/YYYY-MM-DD.md` with:
+- All work I completed this session
+- All commits I made
+- Any issues encountered
+- Notes for next session
+Then update `.docs/PROJECT_STATUS.md` with my contributions.
 
-6. **AFTER COMPLETING WORK:**
-   - Update `.docs/PROJECT_STATUS.md` with what you did
-   - Create/update your log file in `.docs/logs/[yourname]/YYYY-MM-DD.md`
-   - Mark completed tasks in `.docs/REMAINING_TASKS.md`
-   - Commit with descriptive messages
-
-Please analyze the project structure, read the tracking files, and let me know what you understand and what tasks I should work on today.
-```
-
----
-
-## 📋 Quick Commands Reference
-
-### Check Project Status
-
-```
-Read .docs/PROJECT_STATUS.md and .docs/REMAINING_TASKS.md
-```
-
-### Start Working on a Task
-
-```
-I want to work on [TASK_NAME]. First read the tracking folder, then proceed.
-```
-
-### After Completing Work
-
-```
-Update the tracking files in .docs/ with today's work and commit.
+Please analyze the project, read the tracking files, and tell me:
+1. Current project status
+2. What work is remaining
+3. What you suggest I work on today
 ```
 
 ---
 
-## ⚠️ Important Notes
+## 📝 How It Works
 
-1. **Always read `.docs/` folder first** in a new session
-2. **Check git branch** before making changes
-3. **Test build** before committing: `flutter build apk --debug`
-4. **Update logs** at end of each session
-5. **Use existing widgets** - don't recreate what exists
+### Starting a Session
+
+1. Copy the prompt above
+2. **Replace `[WRITE YOUR NAME: Moazzam or Tammer]` with your actual name**
+3. Paste into Antigravity
+4. AI reads tracking files and gives you status
+
+### During Work
+
+- AI follows established patterns
+- Uses global widgets, constants, validators
+- Commits with descriptive messages
+
+### Ending a Session
+
+Just say: **"done working for today"**
+
+AI will automatically:
+
+- Create your daily log file (`.docs/logs/[yourname]/YYYY-MM-DD.md`)
+- Update PROJECT_STATUS.md with your work
+- List all commits and changes made
+
+---
+
+## 🔑 Key Points
+
+| Question | Answer |
+|----------|--------|
+| Does AI know who I am? | **NO** - You must specify your name |
+| Where do I write my name? | In the prompt: `My name is: [YOUR NAME]` |
+| How to save my work log? | Say "done working for today" |
+| Where are logs saved? | `.docs/logs/[yourname]/YYYY-MM-DD.md` |
+
+---
+
+## 📋 Quick Reference
+
+### Moazzam's log folder
+
+`.docs/logs/moazzam/`
+
+### Tammer's log folder
+
+`.docs/logs/tammer/`
+
+### Check branch before starting
+
+```bash
+git branch
+git status
+```
+
+### Test before committing
+
+```bash
+flutter build apk --debug
+```
